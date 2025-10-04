@@ -17,17 +17,17 @@ public class ChatRoomMapper {
         if (entity == null) return null;
 
         var creator = UserMapper.toDomain(entity.getCreatedBy());
-
+        var participants = entity.getParticipants().stream()
+                .map(UserMapper::toDomain)
+                .toList();
         ChatRoom room;
         if (entity.getType() == RoomType.SINGLE) {
-            var participants = entity.getParticipants().stream()
-                    .map(UserMapper::toDomain)
-                    .toList();
-            room = new SingleChatRoom(entity.getRoomId(), creator,
-                    participants.size() > 1 ? participants.get(1) : null);
+            if (participants.isEmpty()){
+                throw new IllegalArgumentException("Must have other participant for single chat room");
+            }
+            room = new SingleChatRoom(entity.getRoomId(), creator, participants.get(1) );
         } else { // GROUP
-            var group = new GroupChatRoom(entity.getRoomId(), creator,
-                    entity.getGroupName(), entity.isPermanent());
+            var group = new GroupChatRoom(entity.getRoomId(), creator, entity.getGroupName(), entity.isPermanent(),participants);
             group.setActive(entity.isActive());
             // map participants
             entity.getParticipants().forEach(u -> group.addParticipant(UserMapper.toDomain(u)));

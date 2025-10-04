@@ -2,6 +2,7 @@ package com.loop.troop.chat.shared.mapper;
 
 import com.loop.troop.chat.domain.user.User;
 import com.loop.troop.chat.application.persistance.entity.UserEntity;
+import com.loop.troop.chat.shared.dto.user.UserResponseDto;
 
 public class UserMapper {
 
@@ -19,6 +20,16 @@ public class UserMapper {
     public static UserEntity toEntity(User domain) {
         if (domain == null) return null;
         return UserEntity.builder()
+                .userId(domain.getUserId())
+                .username(domain.getUsername())
+                .email(domain.getEmail())
+                .avatarUrl(domain.getAvatarUrl())
+                .status(domain.getStatus())
+                .build();
+    }
+
+    public static UserResponseDto toResponseDto(User domain) {
+        return UserResponseDto.builder()
                 .userId(domain.getUserId())
                 .username(domain.getUsername())
                 .email(domain.getEmail())

@@ -14,10 +14,11 @@ public final class GroupChatRoom extends ChatRoom {
     private String groupName;
     private final List<User> admins = new ArrayList<>();
 
-    public GroupChatRoom(String roomId, User createdBy, String groupName, boolean isPermanent) {
+    public GroupChatRoom(String roomId, User createdBy, String groupName, boolean isPermanent,List<User> initialParticipants) {
         super(roomId, RoomType.GROUP, createdBy);
         this.groupName = groupName;
         this.isPermanent = isPermanent;
         admins.add(createdBy);
+        initialParticipants.forEach(this::addParticipant);
     }
 }

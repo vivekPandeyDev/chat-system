@@ -2,6 +2,7 @@ package com.loop.troop.chat.shared.mapper;
 
 import com.loop.troop.chat.domain.message.Message;
 import com.loop.troop.chat.application.persistance.entity.MessageEntity;
+import com.loop.troop.chat.shared.dto.message.MessageResponseDto;
 
 public class MessageMapper {
 
@@ -37,6 +38,18 @@ public class MessageMapper {
                 .type(domain.getType())
                 .sentAt(domain.getSentAt())
                 .status(domain.getStatus())
+                .build();
+    }
+
+    public static MessageResponseDto toResponseDto(Message msg) {
+        return MessageResponseDto.builder()
+                .messageId(msg.getMessageId())
+                .roomId(msg.getRoom().getRoomId())
+                .senderId(msg.getSender().getUserId())
+                .content(msg.getContent())
+                .type(msg.getType())
+                .sentAt(msg.getSentAt())
+                .status(msg.getStatus())
                 .build();
     }
 }

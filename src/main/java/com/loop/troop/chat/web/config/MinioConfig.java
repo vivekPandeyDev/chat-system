@@ -1,4 +1,4 @@
-package com.loop.troop.chat.shared.config;
+package com.loop.troop.chat.web.config;
 
 import lombok.Getter;
 import lombok.Setter;

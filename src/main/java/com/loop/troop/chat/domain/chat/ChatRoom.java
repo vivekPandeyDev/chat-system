@@ -11,6 +11,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -31,7 +32,12 @@ public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
         this.isActive = true;
     }
 
-    public void addParticipant(User user) { participants.add(user); }
+    public void addParticipant(User user) {
+        if (Objects.isNull(user)){
+            throw new IllegalArgumentException("Participant cannot be null in order to add in chat room");
+        }
+        participants.add(user);
+    }
     public void removeParticipant(User user) { participants.remove(user); }
     public List<User> getParticipants() { return List.copyOf(participants); }
 

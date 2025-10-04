@@ -1,4 +1,4 @@
-package com.loop.troop.chat.shared.config;
+package com.loop.troop.chat.web.config;
 
 import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
