@@ -8,7 +8,16 @@ public class UserMapper {
     private UserMapper() {
     }
 
+    public static User toDomain(UserEntity entity) {
+        if (entity == null) return null;
+        var user = new User(entity.getUserId(), entity.getUsername(), entity.getEmail());
+        user.setAvatarUrl(entity.getAvatarUrl());
+        user.setStatus(entity.getStatus());
+        return user;
+    }
+
     public static UserEntity toEntity(User domain) {
+        if (domain == null) return null;
         return UserEntity.builder()
                 .userId(domain.getUserId())
                 .username(domain.getUsername())
@@ -16,9 +25,5 @@ public class UserMapper {
                 .avatarUrl(domain.getAvatarUrl())
                 .status(domain.getStatus())
                 .build();
-    }
-
-    public static User toDomain(UserEntity entity) {
-        return new User(entity.getUserId(), entity.getUsername(), entity.getEmail());
     }
 }

@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "chat_rooms")
@@ -28,4 +30,22 @@ public class ChatRoomEntity {
     private boolean isActive;
     private String groupName;
     private boolean isPermanent;
+
+    // Participants: used for both single and group chat
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "chat_room_participants",
+            joinColumns = @JoinColumn(name = "room_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<UserEntity> participants = new ArrayList<>();
+
+    // Admins for group chats
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "chat_room_admins",
+            joinColumns = @JoinColumn(name = "room_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<UserEntity> admins = new ArrayList<>();
 }

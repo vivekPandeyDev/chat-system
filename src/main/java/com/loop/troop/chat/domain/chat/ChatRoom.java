@@ -6,12 +6,14 @@ import com.loop.troop.chat.domain.message.Message;
 import com.loop.troop.chat.domain.observer.ChatRoomObserver;
 import com.loop.troop.chat.domain.user.User;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
     protected final String roomId;
     protected final RoomType type;
