@@ -6,6 +6,7 @@ import com.loop.troop.chat.web.exception.ServiceException;
 import com.loop.troop.chat.web.registry.builder.ServiceExceptionDetailBuilder;
 import com.loop.troop.chat.web.registry.ServiceExceptionDetailRegistry;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -49,7 +50,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getStatus()).body(problem);
     }
 
-    // Validation Exceptions
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex) {
+        log.warn("Illegal argument: {}", ex.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problem.setType(URI.create("https://example.com/errors/INVALID_ARGUMENT"));
+        problem.setTitle("Invalid Argument");
+        problem.setProperty("errorCode", "INVALID_ARGUMENT");
+        return problem;
+    }
+
+    // Handle Bean Validation errors (@NotBlank, @NotNull)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
         log.warn("Validation failed: {}", ex.getMessage());
@@ -69,6 +80,21 @@ public class GlobalExceptionHandler {
         problem.setInstance(URI.create(request.getRequestURI()));
 
         return ResponseEntity.badRequest().body(problem);
+    }
+
+    // Handle ConstraintViolationException (@Validated on @RequestParam)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ProblemDetail handleConstraintViolation(ConstraintViolationException ex) {
+        String errorMessage = ex.getConstraintViolations().stream()
+                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+                .findFirst()
+                .orElse("Constraint violation");
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, errorMessage);
+        problem.setType(URI.create("https://example.com/errors/CONSTRAINT_VIOLATION"));
+        problem.setTitle("Constraint Violation");
+        problem.setProperty("errorCode", "CONSTRAINT_VIOLATION");
+        return problem;
     }
 
     // Unexpected Exceptions
