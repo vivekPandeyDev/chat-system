@@ -3,10 +3,10 @@ package com.loop.troop.chat.web.config;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
+@Component
 @ConfigurationProperties(prefix = "minio")
-@Configuration
 @Getter
 @Setter
 public class MinioConfig {

@@ -14,6 +14,7 @@ public class ServiceExceptionDetailRegistry {
 
     private final Map<Class<? extends ServiceException>, ServiceExceptionDetailBuilder<?>> registry = new HashMap<>();
 
+    @SuppressWarnings("unchecked")
     public ServiceExceptionDetailRegistry(List<ServiceExceptionDetailBuilder<?>> builders) {
         // Spring injects all beans implementing ServiceExceptionDetailBuilder
         builders.forEach(builder -> {
