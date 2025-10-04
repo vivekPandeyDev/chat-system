@@ -1,4 +1,4 @@
-package com.loop.troop.chat.adapter.service.file;
+package com.loop.troop.chat.adapter.file;
 
 import com.loop.troop.chat.domain.upload.FileStorage;
 import com.loop.troop.chat.web.exception.FileServiceException;
