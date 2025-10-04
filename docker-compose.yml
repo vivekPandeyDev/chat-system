@@ -1,0 +1,137 @@
+services:
+  chat-system-db:
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=chat-db
+    # enable logical replication
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+      - "-c"
+      - "max_wal_senders=10"
+      - "-c"
+      - "max_replication_slots=10"
+      - "-c"
+      - "shared_preload_libraries=pgoutput"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/chat-postgres:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.50'
+    networks:
+      - app-net
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: chat_system_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@chatsystem.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "8081:80"
+    networks:
+      - app-net
+
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: password
+    networks:
+      - app-net
+    volumes:
+      - ./docker/redis:/data
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.50'
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"       # MinIO API
+      - "9001:9001"       # MinIO Console UI
+    command: server /data --console-address ":9001"
+    volumes:
+      - ./docker/minio-data:/data
+    networks:
+      - app-net
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - app-net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  loki:
+    image: grafana/loki:2.9.0
+    ports:
+      - "3100:3100"
+    networks:
+      - app-net
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki-config.yaml:/etc/loki/local-config.yaml
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  promtail:
+    image: grafana/promtail:2.9.0
+    networks:
+      - app-net
+    volumes:
+      - ./promtail-config.yaml:/etc/promtail/config.yml
+      - ./logs:/var/logs
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+  grafana:
+    image: grafana/grafana:9.5.2
+    ports:
+      - "3010:3000"
+    networks:
+      - app-net
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana-data:/var/lib/grafana
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+networks:
+  app-net:
+    external: true

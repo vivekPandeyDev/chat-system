@@ -1,7 +1,7 @@
 package com.loop.troop.chat.mapper;
 
 import com.loop.troop.chat.domain.user.User;
-import com.loop.troop.chat.persistance.entity.UserEntity;
+import com.loop.troop.chat.adapter.persistance.entity.UserEntity;
 
 public class UserMapper {
 

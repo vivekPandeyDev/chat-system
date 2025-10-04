@@ -5,7 +5,7 @@ import com.loop.troop.chat.domain.chat.ChatRoom;
 import com.loop.troop.chat.domain.chat.GroupChatRoom;
 import com.loop.troop.chat.domain.chat.SingleChatRoom;
 import com.loop.troop.chat.domain.user.User;
-import com.loop.troop.chat.persistance.entity.ChatRoomEntity;
+import com.loop.troop.chat.adapter.persistance.entity.ChatRoomEntity;
 
 
 public class ChatRoomMapper {

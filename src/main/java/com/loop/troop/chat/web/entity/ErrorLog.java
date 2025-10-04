@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -13,7 +14,7 @@ public class ErrorLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private UUID transactionId;
     private String errorType;      // SERVICE, VALIDATION, UNEXPECTED
     private String errorCode;      // e.g., ACCOUNT_NOT_FOUND, VALIDATION_ERROR
     private String message;        // User-friendly or validation message

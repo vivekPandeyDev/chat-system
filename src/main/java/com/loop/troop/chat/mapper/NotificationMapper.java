@@ -5,9 +5,9 @@ import com.loop.troop.chat.domain.chat.ChatRoom;
 import com.loop.troop.chat.domain.message.Message;
 import com.loop.troop.chat.domain.notification.Notification;
 import com.loop.troop.chat.domain.user.User;
-import com.loop.troop.chat.persistance.entity.ChatRoomEntity;
-import com.loop.troop.chat.persistance.entity.MessageEntity;
-import com.loop.troop.chat.persistance.entity.NotificationEntity;
+import com.loop.troop.chat.adapter.persistance.entity.ChatRoomEntity;
+import com.loop.troop.chat.adapter.persistance.entity.MessageEntity;
+import com.loop.troop.chat.adapter.persistance.entity.NotificationEntity;
 
 public class NotificationMapper {
 

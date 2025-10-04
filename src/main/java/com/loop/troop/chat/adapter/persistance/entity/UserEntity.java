@@ -1,4 +1,4 @@
-package com.loop.troop.chat.persistance.entity;
+package com.loop.troop.chat.adapter.persistance.entity;
 
 import com.loop.troop.chat.domain.enums.UserStatus;
 import jakarta.persistence.*;

@@ -3,7 +3,7 @@ package com.loop.troop.chat.web.advice;
 import com.loop.troop.chat.web.entity.ErrorLog;
 import com.loop.troop.chat.web.repo.ErrorLogRepository;
 import com.loop.troop.chat.web.exception.ServiceException;
-import com.loop.troop.chat.web.exception.ServiceExceptionDetailBuilder;
+import com.loop.troop.chat.web.registry.builder.ServiceExceptionDetailBuilder;
 import com.loop.troop.chat.web.registry.ServiceExceptionDetailRegistry;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

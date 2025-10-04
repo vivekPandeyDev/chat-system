@@ -1,7 +1,7 @@
 package com.loop.troop.chat.web.registry;
 
 import com.loop.troop.chat.web.exception.ServiceException;
-import com.loop.troop.chat.web.exception.ServiceExceptionDetailBuilder;
+import com.loop.troop.chat.web.registry.builder.ServiceExceptionDetailBuilder;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.stereotype.Component;
 
