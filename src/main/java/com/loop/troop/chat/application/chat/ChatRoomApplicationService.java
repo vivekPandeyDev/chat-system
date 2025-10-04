@@ -68,6 +68,9 @@ public class ChatRoomApplicationService {
         return room.getRoomId();
     }
 
+    public ChatRoom getRoomById(String roomId){
+        return ChatRoomMapper.toDomain(roomRepository.findById(roomId).orElse(null));
+    }
 
     public List<ChatRoom> getAllRooms() {
         return roomRepository.findAll().stream()

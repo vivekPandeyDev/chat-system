@@ -1,4 +1,4 @@
-package com.loop.troop.chat.application.chat;
+package com.loop.troop.chat.application.message;
 
 
 import com.loop.troop.chat.application.persistance.entity.MessageEntity;

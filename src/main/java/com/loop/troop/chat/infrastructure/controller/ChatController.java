@@ -1,7 +1,8 @@
 package com.loop.troop.chat.infrastructure.controller;
 
-import com.loop.troop.chat.application.chat.DirectChatSvc;
-import com.loop.troop.chat.application.chat.GroupChatSvc;
+import com.loop.troop.chat.application.chat.ChatRoomApplicationService;
+import com.loop.troop.chat.application.message.DirectChatSvc;
+import com.loop.troop.chat.application.message.GroupChatSvc;
 import com.loop.troop.chat.domain.chat.ChatRoom;
 import com.loop.troop.chat.domain.enums.MessageType;
 import com.loop.troop.chat.domain.message.Message;
@@ -24,6 +25,7 @@ public class ChatController {
 
     private final DirectChatSvc directChatSvc;
     private final GroupChatSvc groupChatSvc;
+    private final ChatRoomApplicationService chatRoomApplicationService;
 
     // Send a message
     @PostMapping("/{roomId}/message")
@@ -35,7 +37,7 @@ public class ChatController {
         User sender = new User(request.getSenderId(), request.getSenderName(), request.getSenderEmail());
 
         // Fetch or create domain ChatRoom (simplified here, ideally fetch from DB)
-        ChatRoom room = null;
+        ChatRoom room = chatRoomApplicationService.getRoomById(roomId);
 
         // Build message domain object
         Message msg = new Message(
@@ -45,6 +47,7 @@ public class ChatController {
                 request.getContent(),
                 MessageType.valueOf(request.getMessageType())
         );
+        sender.sendMessage(room,msg);
 
         // Select proper chat service
         ChatService svc = request.getRoomType().equalsIgnoreCase("GROUP") ? groupChatSvc : directChatSvc;
