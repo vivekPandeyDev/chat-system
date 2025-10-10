@@ -1,10 +1,10 @@
 package com.loop.troop.chat.infrastructure.shared.mapper;
 
 
-import com.loop.troop.chat.domain.chat.ChatRoom;
-import com.loop.troop.chat.domain.message.Message;
-import com.loop.troop.chat.domain.notification.Notification;
-import com.loop.troop.chat.domain.user.User;
+import com.loop.troop.chat.domain.ChatRoom;
+import com.loop.troop.chat.domain.Message;
+import com.loop.troop.chat.domain.Notification;
+import com.loop.troop.chat.domain.User;
 import com.loop.troop.chat.infrastructure.jpa.entity.ChatRoomEntity;
 import com.loop.troop.chat.infrastructure.jpa.entity.MessageEntity;
 import com.loop.troop.chat.infrastructure.jpa.entity.NotificationEntity;

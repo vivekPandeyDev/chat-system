@@ -1,7 +1,7 @@
-package com.loop.troop.chat.domain.chat;
+package com.loop.troop.chat.domain.event;
 
 import com.loop.troop.chat.domain.enums.EventType;
-import com.loop.troop.chat.domain.message.Message;
+import com.loop.troop.chat.domain.Message;
 
 import java.time.LocalDateTime;
 

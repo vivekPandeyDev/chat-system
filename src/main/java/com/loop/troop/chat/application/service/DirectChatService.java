@@ -1,9 +1,10 @@
-package com.loop.troop.chat.application.service.message;
+package com.loop.troop.chat.application.service;
 
 
+import com.loop.troop.chat.domain.service.ChatRoomObserver;
 import com.loop.troop.chat.infrastructure.jpa.entity.MessageEntity;
 import com.loop.troop.chat.infrastructure.jpa.repository.MessageRepository;
-import com.loop.troop.chat.domain.message.Message;
+import com.loop.troop.chat.domain.Message;
 import com.loop.troop.chat.domain.service.ChatService;
 import com.loop.troop.chat.infrastructure.shared.mapper.MessageMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.List;
 public class DirectChatService implements ChatService {
 
     private final MessageRepository messageRepository;
+    private final List<ChatRoomObserver> chatRoomObservers;
 
     @Override
     public void sendMessage(Message msg) {

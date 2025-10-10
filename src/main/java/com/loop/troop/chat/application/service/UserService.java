@@ -1,4 +1,4 @@
-package com.loop.troop.chat.application.service.user;
+package com.loop.troop.chat.application.service;
 
 import com.loop.troop.chat.application.command.FileUploadCommand;
 import com.loop.troop.chat.application.event.UserRegisteredEvent;
@@ -11,18 +11,18 @@ import com.loop.troop.chat.application.usecase.FileUseCase;
 import com.loop.troop.chat.application.usecase.UserUseCase;
 import com.loop.troop.chat.domain.enums.UserStatus;
 import com.loop.troop.chat.domain.exception.UserServiceException;
-import com.loop.troop.chat.domain.user.User;
+import com.loop.troop.chat.domain.User;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -75,6 +75,11 @@ public class UserService implements UserUseCase {
         savedUser = userPersistence.save(savedUser);
         eventPublisher.publishEvent(new UserStatusUpdateEvent(savedUser));
         log.info("UserService::fetchUsers, user-name: {}, current-status: {}",savedUser.getUsername(),status);
+    }
+
+    @Override
+    public List<User> fetchUsersById(List<String> userIds) {
+        return userPersistence.fetchUsersById(userIds);
     }
 
     @Override

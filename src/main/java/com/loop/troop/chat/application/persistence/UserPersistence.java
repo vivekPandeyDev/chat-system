@@ -3,7 +3,8 @@ package com.loop.troop.chat.application.persistence;
 import com.loop.troop.chat.application.dto.PageResponse;
 import com.loop.troop.chat.application.dto.PaginationQuery;
 import com.loop.troop.chat.domain.enums.UserStatus;
-import com.loop.troop.chat.domain.user.User;
+import com.loop.troop.chat.domain.User;
+import java.util.List;
 import java.util.Optional;
 
 public interface UserPersistence {
@@ -12,4 +13,5 @@ public interface UserPersistence {
     boolean existsByEmail(String email);
     PageResponse<User> findAll(PaginationQuery paginationQuery);
     void updateStatus(String userId, UserStatus status);
+    List<User> fetchUsersById(List<String> userIds);
 }

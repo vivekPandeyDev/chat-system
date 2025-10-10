@@ -1,6 +1,6 @@
-package com.loop.troop.chat.infrastructure.service;
+package com.loop.troop.chat.application.service;
 
-import com.loop.troop.chat.application.service.storage.BucketStorage;
+import com.loop.troop.chat.application.usecase.BucketStorage;
 import com.loop.troop.chat.application.usecase.FileUseCase;
 import com.loop.troop.chat.domain.exception.FileServiceException;
 import jakarta.annotation.PostConstruct;

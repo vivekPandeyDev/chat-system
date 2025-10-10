@@ -1,10 +1,9 @@
-package com.loop.troop.chat.domain.chat;
+package com.loop.troop.chat.domain;
 
 import com.loop.troop.chat.domain.enums.EventType;
 import com.loop.troop.chat.domain.enums.RoomType;
-import com.loop.troop.chat.domain.message.Message;
-import com.loop.troop.chat.domain.observer.ChatRoomObserver;
-import com.loop.troop.chat.domain.user.User;
+import com.loop.troop.chat.domain.event.ChatEvent;
+import com.loop.troop.chat.domain.service.ChatRoomObserver;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +51,7 @@ public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
 
     public void sendMessage(Message msg) {
         var event = new ChatEvent(EventType.MESSAGE_SENT, roomId, msg, LocalDateTime.now());
-        log.info("event created : {}",event);
+        log.info("message send event created : {}",event);
         notifyObservers(event);
     }
 }

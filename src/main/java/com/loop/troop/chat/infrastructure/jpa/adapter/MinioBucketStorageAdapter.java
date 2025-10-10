@@ -1,6 +1,6 @@
-package com.loop.troop.chat.infrastructure.service;
+package com.loop.troop.chat.infrastructure.jpa.adapter;
 
-import com.loop.troop.chat.application.service.storage.BucketStorage;
+import com.loop.troop.chat.application.usecase.BucketStorage;
 import com.loop.troop.chat.domain.exception.FileServiceException;
 import io.minio.*;
 import io.minio.http.Method;
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MinioBucketStorage implements BucketStorage {
+public class MinioBucketStorageAdapter implements BucketStorage {
 
     private final MinioClient minioClient;
 

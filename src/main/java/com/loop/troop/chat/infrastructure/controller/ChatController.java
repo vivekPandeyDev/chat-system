@@ -1,14 +1,14 @@
 package com.loop.troop.chat.infrastructure.controller;
 
 import com.loop.troop.chat.application.chat.ChatRoomApplicationService;
-import com.loop.troop.chat.application.service.message.DirectChatService;
-import com.loop.troop.chat.application.service.message.GroupChatService;
-import com.loop.troop.chat.application.service.user.UserService;
-import com.loop.troop.chat.domain.chat.ChatRoom;
+import com.loop.troop.chat.application.service.DirectChatService;
+import com.loop.troop.chat.application.service.GroupChatService;
+import com.loop.troop.chat.application.service.UserService;
+import com.loop.troop.chat.domain.ChatRoom;
 import com.loop.troop.chat.domain.enums.MessageType;
 import com.loop.troop.chat.domain.enums.RoomType;
 import com.loop.troop.chat.domain.exception.UserServiceException;
-import com.loop.troop.chat.domain.message.Message;
+import com.loop.troop.chat.domain.Message;
 import com.loop.troop.chat.domain.service.ChatService;
 import com.loop.troop.chat.infrastructure.shared.dto.message.MessageRequestDto;
 import com.loop.troop.chat.infrastructure.shared.dto.message.MessageResponseDto;

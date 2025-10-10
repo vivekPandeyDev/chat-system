@@ -1,7 +1,7 @@
 package com.loop.troop.chat.infrastructure.controller;
 
 import com.loop.troop.chat.application.chat.ChatRoomApplicationService;
-import com.loop.troop.chat.domain.chat.ChatRoom;
+import com.loop.troop.chat.domain.ChatRoom;
 import com.loop.troop.chat.infrastructure.shared.dto.room.AddParticipantRequestDto;
 import com.loop.troop.chat.infrastructure.shared.dto.room.CreateRoomRequestDto;
 import lombok.RequiredArgsConstructor;

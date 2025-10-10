@@ -5,7 +5,7 @@ import com.loop.troop.chat.application.dto.PaginationQuery;
 import com.loop.troop.chat.application.persistence.UserPersistence;
 import com.loop.troop.chat.domain.enums.UserStatus;
 import com.loop.troop.chat.domain.exception.UserServiceException;
-import com.loop.troop.chat.domain.user.User;
+import com.loop.troop.chat.domain.User;
 import com.loop.troop.chat.infrastructure.jpa.repository.UserRepository;
 import com.loop.troop.chat.infrastructure.shared.mapper.UserMapper;
 import com.loop.troop.chat.infrastructure.shared.utility.Utility;
@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -87,5 +88,16 @@ public class UserJpaPersistenceAdapter implements UserPersistence {
         var savedUserEntity = userRepository.findById(UUID.fromString(userId)).orElseThrow(()-> UserServiceException.userNotFound(userId));
         savedUserEntity.setStatus(status);
         userRepository.save(savedUserEntity);
+    }
+
+    @Override
+    public List<User> fetchUsersById(List<String> userIds) {
+        for (var id : userIds){
+            if (!Utility.isValidUUid(id)){
+                throw new IllegalArgumentException("Invalid UUID format");
+            }
+        }
+        var ids = userIds.stream().map(UUID::fromString).toList();
+        return userRepository.findByUserIdIn(ids).stream().map(UserMapper::toDomain).toList();
     }
 }

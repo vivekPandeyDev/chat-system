@@ -1,4 +1,4 @@
-package com.loop.troop.chat.application.service.storage;
+package com.loop.troop.chat.application.usecase;
 
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;

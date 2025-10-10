@@ -7,6 +7,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "chat_rooms")
@@ -17,7 +18,8 @@ import java.util.List;
 @Builder
 public class ChatRoomEntity {
     @Id
-    private String roomId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID roomId;
 
     @Enumerated(EnumType.STRING)
     private RoomType type;

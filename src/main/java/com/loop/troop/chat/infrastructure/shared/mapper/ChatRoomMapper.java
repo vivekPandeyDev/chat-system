@@ -1,11 +1,14 @@
 package com.loop.troop.chat.infrastructure.shared.mapper;
 
 
-import com.loop.troop.chat.domain.chat.ChatRoom;
-import com.loop.troop.chat.domain.chat.GroupChatRoom;
-import com.loop.troop.chat.domain.chat.SingleChatRoom;
+import com.loop.troop.chat.domain.ChatRoom;
+import com.loop.troop.chat.domain.GroupChatRoom;
+import com.loop.troop.chat.domain.SingleChatRoom;
+import com.loop.troop.chat.domain.service.ChatRoomObserver;
 import com.loop.troop.chat.infrastructure.jpa.entity.ChatRoomEntity;
 import com.loop.troop.chat.domain.enums.RoomType;
+
+import java.util.List;
 
 
 public class ChatRoomMapper {

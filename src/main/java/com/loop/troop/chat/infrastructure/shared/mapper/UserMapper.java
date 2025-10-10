@@ -1,6 +1,6 @@
 package com.loop.troop.chat.infrastructure.shared.mapper;
 
-import com.loop.troop.chat.domain.user.User;
+import com.loop.troop.chat.domain.User;
 import com.loop.troop.chat.infrastructure.jpa.entity.UserEntity;
 import com.loop.troop.chat.infrastructure.shared.dto.user.UserResponseDto;
 

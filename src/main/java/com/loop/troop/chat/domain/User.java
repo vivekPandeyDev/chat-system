@@ -1,9 +1,6 @@
-package com.loop.troop.chat.domain.user;
+package com.loop.troop.chat.domain;
 
-import com.loop.troop.chat.domain.chat.ChatRoom;
 import com.loop.troop.chat.domain.enums.UserStatus;
-import com.loop.troop.chat.domain.message.Message;
-import com.loop.troop.chat.domain.notification.Notification;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
