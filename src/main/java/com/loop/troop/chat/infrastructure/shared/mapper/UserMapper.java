@@ -14,7 +14,7 @@ public class UserMapper {
 
     public static User toDomain(UserEntity entity) {
         if (entity == null) return null;
-        var user = new User(entity.getUsername(), entity.getEmail(),entity.getAvatarUrl());
+        var user = new User(entity.getUsername(), entity.getEmail(), entity.getImagePath());
         user.setUserId(Objects.nonNull(entity.getUserId()) ? String.valueOf(entity.getUserId()) : null);
         user.setStatus(entity.getStatus());
         return user;
@@ -22,22 +22,27 @@ public class UserMapper {
 
     public static UserEntity toEntity(User domain) {
         if (domain == null) return null;
-        UUID userId = Objects.nonNull(domain.getUserId()) ? UUID.fromString(domain.getUserId()) : null;
-        return UserEntity.builder()
-                .userId(userId)
-                .username(domain.getUsername())
-                .email(domain.getEmail())
-                .avatarUrl(domain.getAvatarUrl())
-                .status(domain.getStatus())
-                .build();
+        UUID userId = null;
+        if (domain.getUserId() != null && !domain.getUserId().isEmpty()) {
+            userId = UUID.fromString(domain.getUserId());
+        }
+
+        UserEntity entity = new UserEntity();
+        entity.setUserId(userId);
+        entity.setUsername(domain.getUsername());
+        entity.setEmail(domain.getEmail());
+        entity.setImagePath(domain.getImagePath());
+        entity.setStatus(domain.getStatus());
+
+        return entity;
     }
 
-    public static UserResponseDto toResponseDto(User domain) {
+    public static UserResponseDto toResponseDto(User domain, String profileUrl) {
         return UserResponseDto.builder()
                 .userId(domain.getUserId())
                 .username(domain.getUsername())
                 .email(domain.getEmail())
-                .avatarUrl(domain.getAvatarUrl())
+                .avatarUrl(profileUrl)
                 .status(domain.getStatus())
                 .build();
     }

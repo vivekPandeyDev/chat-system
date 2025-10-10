@@ -1,8 +1,8 @@
 package com.loop.troop.chat.infrastructure.controller;
 
 import com.loop.troop.chat.application.chat.ChatRoomApplicationService;
-import com.loop.troop.chat.application.service.message.DirectChatSvc;
-import com.loop.troop.chat.application.service.message.GroupChatSvc;
+import com.loop.troop.chat.application.service.message.DirectChatService;
+import com.loop.troop.chat.application.service.message.GroupChatService;
 import com.loop.troop.chat.application.service.user.UserService;
 import com.loop.troop.chat.domain.chat.ChatRoom;
 import com.loop.troop.chat.domain.enums.MessageType;
@@ -26,8 +26,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ChatController {
 
-    private final DirectChatSvc directChatSvc;
-    private final GroupChatSvc groupChatSvc;
+    private final DirectChatService directChatService;
+    private final GroupChatService groupChatService;
     private final ChatRoomApplicationService chatRoomApplicationService;
     private final UserService userService;
     // Send a message
@@ -53,7 +53,7 @@ public class ChatController {
         sender.sendMessage(room,msg);
 
         // Select proper chat service
-        ChatService svc = room.getType().equals(RoomType.GROUP) ? groupChatSvc : directChatSvc;
+        ChatService svc = room.getType().equals(RoomType.GROUP) ? groupChatService : directChatService;
 
         svc.sendMessage(msg);
 
@@ -66,7 +66,7 @@ public class ChatController {
             @PathVariable String roomId,
             @RequestParam(defaultValue = "DIRECT") String roomType
     ) {
-        ChatService svc = roomType.equalsIgnoreCase("GROUP") ? groupChatSvc : directChatSvc;
+        ChatService svc = roomType.equalsIgnoreCase("GROUP") ? groupChatService : directChatService;
         List<Message> messages = svc.fetchMessages(roomId);
 
         List<MessageResponseDto> response = messages.stream()

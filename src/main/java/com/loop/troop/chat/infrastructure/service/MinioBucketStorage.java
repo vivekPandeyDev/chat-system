@@ -1,6 +1,6 @@
-package com.loop.troop.chat.application.service.file;
+package com.loop.troop.chat.infrastructure.service;
 
-import com.loop.troop.chat.domain.upload.FileStorage;
+import com.loop.troop.chat.application.service.storage.BucketStorage;
 import com.loop.troop.chat.domain.exception.FileServiceException;
 import io.minio.*;
 import io.minio.http.Method;
@@ -14,17 +14,17 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MinioFileStorage implements FileStorage {
+public class MinioBucketStorage implements BucketStorage {
 
     private final MinioClient minioClient;
 
-    @Override
     public void initBucket(String bucketName) {
         try {
             boolean exists = minioClient.bucketExists(
                     BucketExistsArgs.builder().bucket(bucketName).build()
             );
             if (!exists) {
+                log.info("Initializing bucket with name: {}",bucketName);
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
             }
         } catch (Exception ex) {
@@ -34,7 +34,7 @@ public class MinioFileStorage implements FileStorage {
     }
 
     @Override
-    public void upload(String bucketName, String objectName, InputStream inputStream, long size, String contentType) {
+    public void uploadToBucket(String bucketName, String objectName, InputStream inputStream, long size, String contentType) {
         try {
             minioClient.putObject(
                     PutObjectArgs.builder()

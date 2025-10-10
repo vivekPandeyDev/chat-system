@@ -19,11 +19,17 @@ public class User {
     private String userId;
     private String username;
     private String email;
-    private String avatarUrl;
+    private String imagePath;
     private UserStatus status;
 
-    public User(String username, String email,String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public User(String username, String email,String imagePath) {
+        this.imagePath = imagePath;
+        this.username = username;
+        this.email = email;
+        this.status = UserStatus.OFFLINE;
+    }
+
+    public User(String username, String email) {
         this.username = username;
         this.email = email;
         this.status = UserStatus.OFFLINE;

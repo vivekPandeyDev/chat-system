@@ -13,26 +13,24 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class DirectChatSvc implements ChatService {
+public class GroupChatService implements ChatService {
 
     private final MessageRepository messageRepository;
 
     @Override
     public void sendMessage(Message msg) {
-        // convert domain -> entity
         MessageEntity entity = MessageMapper.toEntity(msg);
-
-        // save message
         messageRepository.save(entity);
 
+        // Notify observers (domain layer)
+        msg.getRoom().sendMessage(msg);
+
+        // TODO: Publish event to RabbitMQ/WebSocket for real-time notifications
     }
 
     @Override
     public List<Message> fetchMessages(String roomId) {
-        // fetch entity list
         List<MessageEntity> entities = messageRepository.findByRoomId(roomId);
-
-        // map to domain
         return entities.stream()
                 .map(MessageMapper::toDomain)
                 .toList();

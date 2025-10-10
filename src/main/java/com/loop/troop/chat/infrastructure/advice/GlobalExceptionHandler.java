@@ -1,10 +1,11 @@
-package com.loop.troop.chat.infrastructure.shared.advice;
+package com.loop.troop.chat.infrastructure.advice;
 
 import com.loop.troop.chat.infrastructure.shared.service.ErrorLogService;
 import com.loop.troop.chat.domain.exception.ServiceException;
 import com.loop.troop.chat.domain.exception.builder.ServiceExceptionDetailBuilder;
 import com.loop.troop.chat.infrastructure.shared.registry.ServiceExceptionDetailRegistry;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +76,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ProblemDetail handleConstraintViolation(ConstraintViolationException ex) {
         String errorMessage = ex.getConstraintViolations().stream()
-                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+                .map(ConstraintViolation::getMessage)
                 .findFirst()
                 .orElse("Constraint violation");
 
