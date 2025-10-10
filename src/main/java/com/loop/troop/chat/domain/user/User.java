@@ -6,6 +6,7 @@ import com.loop.troop.chat.domain.message.Message;
 import com.loop.troop.chat.domain.notification.Notification;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
@@ -13,6 +14,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Slf4j
+@ToString
 public class User {
     private String userId;
     private String username;

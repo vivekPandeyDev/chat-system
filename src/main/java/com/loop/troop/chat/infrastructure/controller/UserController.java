@@ -54,10 +54,17 @@ public class UserController {
     }
 
 
-    @PatchMapping("/{userId}/status")
-    public ResponseEntity<ApiResponse<Void>> updateStatus(@PathVariable String userId, @RequestParam String status) {
-        userService.updateStatus(userId, UserStatus.valueOf(status));
-        ApiResponse<Void> response = new ApiResponse<>(true, "User status updated successfully", null);
+    @PatchMapping("/{userId}/{status}")
+    public ResponseEntity<ApiResponse<UserResponseDto>> updateStatus(@PathVariable String userId, @PathVariable String status) {
+        UserStatus userStatus;
+        try {
+            userStatus = UserStatus.valueOf(status.toUpperCase());
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("valid user status required: ONLINE, OFFLINE, AWAY, DO_NOT_DISTURB");
+        }
+        userService.updateStatus(userId, userStatus);
+        var user = userService.fetchUserByUserId(userId).map(UserMapper::toResponseDto).orElseThrow(() -> UserServiceException.userNotFound(userId));
+        var response = new ApiResponse<>(true, "User status updated successfully", user);
         return ResponseEntity.ok(response);
     }
 }

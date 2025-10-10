@@ -35,10 +35,10 @@ public class UserService implements UserUseCase {
     @Override
     public User registerUser(@Valid CreateUserCommand command) {
         log.info("user registration command data: {}",command);
+        if (userPersistence.existsByEmail(command.email())) {
+            throw UserServiceException.userAlreadyExists(command.email());
+        }
         try {
-            if (userPersistence.existsByEmail(command.email())) {
-                throw UserServiceException.userAlreadyExists(command.email());
-            }
             var newUser = new User(command.username(), command.email(), command.avatarUrl());
             User savedUser = userPersistence.save(newUser);
             eventPublisher.publishEvent(new UserRegisteredEvent(savedUser));

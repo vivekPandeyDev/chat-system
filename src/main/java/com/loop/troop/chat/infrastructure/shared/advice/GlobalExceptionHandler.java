@@ -32,16 +32,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<ProblemDetail> handleServiceException(ServiceException ex, HttpServletRequest request) {
         log.error("ServiceException: {}", ex.getErrorCode(), ex);
-
         String detail = buildDetail(ex);
         errorLogService.persistError("SERVICE", ex.getErrorCode(), ex.getUserMessage(), detail, ex, request.getRequestURI());
-
         ProblemDetail problem = ProblemDetail.forStatus(ex.getStatus());
         problem.setType(URI.create("https://example.com/probs/" + ex.getErrorCode().toLowerCase()));
         problem.setTitle(ex.getUserMessage());
         problem.setDetail(detail);
         problem.setInstance(URI.create(request.getRequestURI()));
-
         return ResponseEntity.status(ex.getStatus()).body(problem);
     }
 
@@ -65,9 +62,6 @@ public class GlobalExceptionHandler {
                           .stream()
                           .map(err -> err.getField() + ": " + err.getDefaultMessage())
                           .collect(Collectors.joining("; "));
-
-        errorLogService.persistError("VALIDATION", "VALIDATION_ERROR", "Validation failed", errors, ex, request.getRequestURI());
-
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
         problem.setType(URI.create("https://example.com/probs/validation-error"));
         problem.setTitle("Validation failed");
@@ -99,7 +93,6 @@ public class GlobalExceptionHandler {
 
         String detail = ex.getMessage() != null ? ex.getMessage() : "No additional details";
         errorLogService.persistError("UNEXPECTED", "UNEXPECTED_ERROR", UNEXPECTED_ERROR, detail, ex, request.getRequestURI());
-
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
         problem.setType(URI.create("https://example.com/probs/unexpected-error"));
         problem.setTitle(UNEXPECTED_ERROR);

@@ -19,6 +19,6 @@ public class Utility {
     }
 
     public static boolean isBlank(String value){
-        return value != null && !value.isBlank(); // null or blank is invalid
+        return value == null || value.isBlank(); // null or blank is invalid
     }
 }
