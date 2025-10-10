@@ -1,8 +1,8 @@
 package com.loop.troop.chat.infrastructure.controller;
 
-import com.loop.troop.chat.application.file.FileStorageManager;
-import com.loop.troop.chat.shared.dto.file.FileUploadResponse;
-import com.loop.troop.chat.shared.dto.file.FileUrlResponse;
+import com.loop.troop.chat.application.service.file.FileStorageManager;
+import com.loop.troop.chat.infrastructure.shared.dto.file.FileUploadResponse;
+import com.loop.troop.chat.infrastructure.shared.dto.file.FileUrlResponse;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;

@@ -1,16 +1,16 @@
 package com.loop.troop.chat.application.chat;
 
 
-import com.loop.troop.chat.application.persistance.repo.ChatRoomRepository;
-import com.loop.troop.chat.application.persistance.repo.UserRepository;
+import com.loop.troop.chat.infrastructure.jpa.repository.ChatRoomRepository;
+import com.loop.troop.chat.infrastructure.jpa.repository.UserRepository;
 import com.loop.troop.chat.domain.chat.ChatRoom;
 import com.loop.troop.chat.domain.chat.GroupChatRoom;
 import com.loop.troop.chat.domain.chat.SingleChatRoom;
 import com.loop.troop.chat.domain.enums.RoomType;
 import com.loop.troop.chat.domain.user.User;
-import com.loop.troop.chat.shared.dto.room.CreateRoomRequestDto;
-import com.loop.troop.chat.shared.mapper.ChatRoomMapper;
-import com.loop.troop.chat.shared.mapper.UserMapper;
+import com.loop.troop.chat.infrastructure.shared.dto.room.CreateRoomRequestDto;
+import com.loop.troop.chat.infrastructure.shared.mapper.ChatRoomMapper;
+import com.loop.troop.chat.infrastructure.shared.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +30,7 @@ public class ChatRoomApplicationService {
     public String createRoom(CreateRoomRequestDto request) {
 
         // Fetch creator from DB
-        var creatorEntity = userRepository.findById(request.getCreatedById())
+        var creatorEntity = userRepository.findById(UUID.fromString(request.getCreatedById()))
                 .orElseThrow(() -> new IllegalArgumentException("Creator user not found"));
         User creator = UserMapper.toDomain(creatorEntity);
 
@@ -41,7 +41,7 @@ public class ChatRoomApplicationService {
                 throw new IllegalArgumentException("Single chat requires second participant");
             }
 
-            var otherEntity = userRepository.findById(request.getOtherParticipantId())
+            var otherEntity = userRepository.findById(UUID.fromString(request.getOtherParticipantId()))
                     .orElseThrow(() -> new IllegalArgumentException("Second participant not found"));
             User other = UserMapper.toDomain(otherEntity);
 
@@ -52,7 +52,7 @@ public class ChatRoomApplicationService {
             List<User> participants = new ArrayList<>();
             if (request.getInitialParticipantIds() != null) {
                 participants = request.getInitialParticipantIds().stream()
-                        .map(id -> userRepository.findById(id)
+                        .map(id -> userRepository.findById(UUID.fromString(id))
                                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + id)))
                         .map(UserMapper::toDomain)
                         .toList();
@@ -81,7 +81,7 @@ public class ChatRoomApplicationService {
     @Transactional
     public void addParticipant(String roomId, String userId) {
         var roomOpt = roomRepository.findById(roomId);
-        var userOpt = userRepository.findById(userId);
+        var userOpt = userRepository.findById(UUID.fromString(userId));
 
         if (roomOpt.isEmpty() || userOpt.isEmpty()) {
             throw new IllegalArgumentException("Room or User not found");

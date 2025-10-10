@@ -7,6 +7,7 @@ import com.loop.troop.chat.domain.observer.ChatRoomObserver;
 import com.loop.troop.chat.domain.user.User;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@Slf4j
 public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
     protected final String roomId;
     protected final RoomType type;
@@ -50,6 +52,7 @@ public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
 
     public void sendMessage(Message msg) {
         var event = new ChatEvent(EventType.MESSAGE_SENT, roomId, msg, LocalDateTime.now());
+        log.info("event created : {}",event);
         notifyObservers(event);
     }
 }
