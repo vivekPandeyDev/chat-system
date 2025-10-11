@@ -24,92 +24,97 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    public static final String UNEXPECTED_ERROR = "Unexpected error";
-    private final ServiceExceptionDetailRegistry detailRegistry;
-    private final ErrorLogService errorLogService;
+	public static final String UNEXPECTED_ERROR = "Unexpected error";
 
+	private final ServiceExceptionDetailRegistry detailRegistry;
 
-    // Service Exceptions
-    @ExceptionHandler(ServiceException.class)
-    public ResponseEntity<ProblemDetail> handleServiceException(ServiceException ex, HttpServletRequest request) {
-        log.error("ServiceException: {}", ex.getErrorCode(), ex);
-        String detail = buildDetail(ex);
-        errorLogService.persistError("SERVICE", ex.getErrorCode(), ex.getUserMessage(), detail, ex, request.getRequestURI());
-        ProblemDetail problem = ProblemDetail.forStatus(ex.getStatus());
-        problem.setType(URI.create("https://example.com/probs/" + ex.getErrorCode().toLowerCase()));
-        problem.setTitle(ex.getUserMessage());
-        problem.setDetail(detail);
-        problem.setInstance(URI.create(request.getRequestURI()));
-        return ResponseEntity.status(ex.getStatus()).body(problem);
-    }
+	private final ErrorLogService errorLogService;
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex) {
-        log.warn("Illegal argument: {}", ex.getMessage());
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
-        problem.setType(URI.create("https://example.com/errors/INVALID_ARGUMENT"));
-        problem.setTitle("Invalid Argument");
-        problem.setProperty("errorCode", "INVALID_ARGUMENT");
-        return problem;
-    }
+	// Service Exceptions
+	@ExceptionHandler(ServiceException.class)
+	public ResponseEntity<ProblemDetail> handleServiceException(ServiceException ex, HttpServletRequest request) {
+		log.error("ServiceException: {}", ex.getErrorCode(), ex);
+		String detail = buildDetail(ex);
+		errorLogService.persistError("SERVICE", ex.getErrorCode(), ex.getUserMessage(), detail, ex,
+				request.getRequestURI());
+		ProblemDetail problem = ProblemDetail.forStatus(ex.getStatus());
+		problem.setType(URI.create("https://example.com/probs/" + ex.getErrorCode().toLowerCase()));
+		problem.setTitle(ex.getUserMessage());
+		problem.setDetail(detail);
+		problem.setInstance(URI.create(request.getRequestURI()));
+		return ResponseEntity.status(ex.getStatus()).body(problem);
+	}
 
-    // Handle Bean Validation errors (@NotBlank, @NotNull)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ProblemDetail> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        log.warn("Validation failed: {}", ex.getMessage());
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex) {
+		log.warn("Illegal argument: {}", ex.getMessage());
+		ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+		problem.setType(URI.create("https://example.com/errors/INVALID_ARGUMENT"));
+		problem.setTitle("Invalid Argument");
+		problem.setProperty("errorCode", "INVALID_ARGUMENT");
+		return problem;
+	}
 
-        String errors = ex.getBindingResult()
-                          .getFieldErrors()
-                          .stream()
-                          .map(err -> err.getField() + ": " + err.getDefaultMessage())
-                          .collect(Collectors.joining("; "));
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-        problem.setType(URI.create("https://example.com/probs/validation-error"));
-        problem.setTitle("Validation failed");
-        problem.setDetail(errors);
-        problem.setInstance(URI.create(request.getRequestURI()));
+	// Handle Bean Validation errors (@NotBlank, @NotNull)
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ProblemDetail> handleValidationExceptions(MethodArgumentNotValidException ex,
+			HttpServletRequest request) {
+		log.warn("Validation failed: {}", ex.getMessage());
 
-        return ResponseEntity.badRequest().body(problem);
-    }
+		String errors = ex.getBindingResult()
+			.getFieldErrors()
+			.stream()
+			.map(err -> err.getField() + ": " + err.getDefaultMessage())
+			.collect(Collectors.joining("; "));
+		ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+		problem.setType(URI.create("https://example.com/probs/validation-error"));
+		problem.setTitle("Validation failed");
+		problem.setDetail(errors);
+		problem.setInstance(URI.create(request.getRequestURI()));
 
-    // Handle ConstraintViolationException (@Validated on @RequestParam)
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ProblemDetail handleConstraintViolation(ConstraintViolationException ex) {
-        String errorMessage = ex.getConstraintViolations().stream()
-                .map(ConstraintViolation::getMessage)
-                .findFirst()
-                .orElse("Constraint violation");
+		return ResponseEntity.badRequest().body(problem);
+	}
 
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, errorMessage);
-        problem.setType(URI.create("https://example.com/errors/CONSTRAINT_VIOLATION"));
-        problem.setTitle("Constraint Violation");
-        problem.setProperty("errorCode", "CONSTRAINT_VIOLATION");
-        return problem;
-    }
+	// Handle ConstraintViolationException (@Validated on @RequestParam)
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ProblemDetail handleConstraintViolation(ConstraintViolationException ex) {
+		String errorMessage = ex.getConstraintViolations()
+			.stream()
+			.map(ConstraintViolation::getMessage)
+			.findFirst()
+			.orElse("Constraint violation");
 
-    // Unexpected Exceptions
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ProblemDetail> handleOtherExceptions(Exception ex, HttpServletRequest request) {
-        log.error(UNEXPECTED_ERROR, ex);
+		ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, errorMessage);
+		problem.setType(URI.create("https://example.com/errors/CONSTRAINT_VIOLATION"));
+		problem.setTitle("Constraint Violation");
+		problem.setProperty("errorCode", "CONSTRAINT_VIOLATION");
+		return problem;
+	}
 
-        String detail = ex.getMessage() != null ? ex.getMessage() : "No additional details";
-        errorLogService.persistError("UNEXPECTED", "UNEXPECTED_ERROR", UNEXPECTED_ERROR, detail, ex, request.getRequestURI());
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-        problem.setType(URI.create("https://example.com/probs/unexpected-error"));
-        problem.setTitle(UNEXPECTED_ERROR);
-        problem.setDetail("Something went wrong. Please contact support.");
-        problem.setInstance(URI.create(request.getRequestURI()));
+	// Unexpected Exceptions
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ProblemDetail> handleOtherExceptions(Exception ex, HttpServletRequest request) {
+		log.error(UNEXPECTED_ERROR, ex);
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(problem);
-    }
+		String detail = ex.getMessage() != null ? ex.getMessage() : "No additional details";
+		errorLogService.persistError("UNEXPECTED", "UNEXPECTED_ERROR", UNEXPECTED_ERROR, detail, ex,
+				request.getRequestURI());
+		ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+		problem.setType(URI.create("https://example.com/probs/unexpected-error"));
+		problem.setTitle(UNEXPECTED_ERROR);
+		problem.setDetail("Something went wrong. Please contact support.");
+		problem.setInstance(URI.create(request.getRequestURI()));
 
-    @SuppressWarnings("unchecked")
-    private String buildDetail(ServiceException ex) {
-        ServiceExceptionDetailBuilder<? extends ServiceException> builder = detailRegistry.getBuilder(ex.getClass());
-        if (builder == null) {
-            return "No additional details available";
-        }
-        return ((ServiceExceptionDetailBuilder<ServiceException>) builder).buildDetail(ex);
-    }
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(problem);
+	}
+
+	@SuppressWarnings("unchecked")
+	private String buildDetail(ServiceException ex) {
+		ServiceExceptionDetailBuilder<? extends ServiceException> builder = detailRegistry.getBuilder(ex.getClass());
+		if (builder == null) {
+			return "No additional details available";
+		}
+		return ((ServiceExceptionDetailBuilder<ServiceException>) builder).buildDetail(ex);
+	}
 
 }

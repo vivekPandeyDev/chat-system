@@ -1,6 +1,5 @@
 package com.loop.troop.chat.infrastructure.jpa.entity;
 
-
 import com.loop.troop.chat.domain.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,24 +14,27 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class NotificationEntity {
-    @Id
-    private String notificationId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+	@Id
+	private String notificationId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
-    private ChatRoomEntity room;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "message_id")
-    private MessageEntity message;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "room_id")
+	private ChatRoomEntity room;
 
-    @Enumerated(EnumType.STRING)
-    private NotificationType type;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "message_id")
+	private MessageEntity message;
 
-    private boolean isRead;
-    private LocalDateTime createdAt;
+	@Enumerated(EnumType.STRING)
+	private NotificationType type;
+
+	private boolean isRead;
+
+	private LocalDateTime createdAt;
+
 }

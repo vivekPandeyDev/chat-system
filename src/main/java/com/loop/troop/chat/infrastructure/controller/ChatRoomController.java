@@ -18,52 +18,53 @@ import java.util.List;
 @Validated
 public class ChatRoomController {
 
-    private final ChatRoomApplicationService roomService;
+	private final ChatRoomApplicationService roomService;
 
-    // ------------------------
-    // Create a chat room
-    // ------------------------
-    @PostMapping
-    public ResponseEntity<String> createRoom(@Valid @RequestBody CreateRoomRequestDto request) {
-        try {
-            String roomId = roomService.createRoom(request);
-            return ResponseEntity.ok("Room created successfully with ID: " + roomId);
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        }
-    }
+	// ------------------------
+	// Create a chat room
+	// ------------------------
+	@PostMapping
+	public ResponseEntity<String> createRoom(@Valid @RequestBody CreateRoomRequestDto request) {
+		try {
+			String roomId = roomService.createRoom(request);
+			return ResponseEntity.ok("Room created successfully with ID: " + roomId);
+		}
+		catch (IllegalArgumentException ex) {
+			return ResponseEntity.badRequest().body(ex.getMessage());
+		}
+	}
 
-    // ------------------------
-    // Fetch all rooms
-    // ------------------------
-    @GetMapping
-    public ResponseEntity<List<String>> getAllRooms() {
-        List<ChatRoom> rooms = roomService.getAllRooms();
-        List<String> roomIds = rooms.stream().map(ChatRoom::getRoomId).toList();
-        return ResponseEntity.ok(roomIds);
-    }
+	// ------------------------
+	// Fetch all rooms
+	// ------------------------
+	@GetMapping
+	public ResponseEntity<List<String>> getAllRooms() {
+		List<ChatRoom> rooms = roomService.getAllRooms();
+		List<String> roomIds = rooms.stream().map(ChatRoom::getRoomId).toList();
+		return ResponseEntity.ok(roomIds);
+	}
 
-    // ------------------------
-    // Add participant to a room
-    // ------------------------
-    @PostMapping("/{roomId}/participants")
-    public ResponseEntity<String> addParticipant(@PathVariable String roomId,
-                                                 @Valid @RequestBody AddParticipantRequestDto request) {
+	// ------------------------
+	// Add participant to a room
+	// ------------------------
+	@PostMapping("/{roomId}/participants")
+	public ResponseEntity<String> addParticipant(@PathVariable String roomId,
+			@Valid @RequestBody AddParticipantRequestDto request) {
 
-        roomService.addParticipant(roomId, request.getUserId());
+		roomService.addParticipant(roomId, request.getUserId());
 
-        return ResponseEntity.ok("Participant added successfully");
-    }
+		return ResponseEntity.ok("Participant added successfully");
+	}
 
-    // ------------------------
-    // Remove participant from a room
-    // ------------------------
-    @DeleteMapping("/{roomId}/participants/{userId}")
-    public ResponseEntity<String> removeParticipant(@PathVariable String roomId,
-                                                    @PathVariable String userId) {
+	// ------------------------
+	// Remove participant from a room
+	// ------------------------
+	@DeleteMapping("/{roomId}/participants/{userId}")
+	public ResponseEntity<String> removeParticipant(@PathVariable String roomId, @PathVariable String userId) {
 
-        roomService.removeParticipant(roomId, userId);
+		roomService.removeParticipant(roomId, userId);
 
-        return ResponseEntity.ok("Participant removed successfully");
-    }
+		return ResponseEntity.ok("Participant removed successfully");
+	}
+
 }

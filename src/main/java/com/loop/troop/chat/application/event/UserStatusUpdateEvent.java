@@ -4,4 +4,3 @@ import com.loop.troop.chat.domain.User;
 
 public record UserStatusUpdateEvent(User user) {
 }
-

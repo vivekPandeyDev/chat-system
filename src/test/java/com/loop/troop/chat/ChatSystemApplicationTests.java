@@ -10,7 +10,7 @@ class ChatSystemApplicationTests {
 
 	@Test
 	void contextLoads() {
-	    log.info("Spring boot test context loaded");
-    }
+		log.info("Spring boot test context loaded");
+	}
 
 }

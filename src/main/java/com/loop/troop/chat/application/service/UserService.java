@@ -33,71 +33,77 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class UserService implements UserUseCase {
 
-    private final UserPersistence userPersistence;
-    private final FileUseCase fileUseCase;
-    private final ApplicationEventPublisher eventPublisher;
+	private final UserPersistence userPersistence;
 
-    @Override
-    public User registerUser(@Valid CreateUserCommand command) {
-        log.info("user registration command data: {}",command);
-        if (userPersistence.existsByEmail(command.email())) {
-            throw UserServiceException.userAlreadyExists(command.email());
-        }
-        try {
-            var newUser = new User(command.username(), command.email());
-            User savedUser = userPersistence.save(newUser);
-            eventPublisher.publishEvent(new UserRegisteredEvent(savedUser));
-            log.info("saved user info: {}", savedUser);
-            return savedUser;
-        }catch (Exception ex){
-            log.info("Exception occurred while registering a new user: {}",ex.getMessage(),ex);
-            throw   UserServiceException.registrationFailed(ex.getMessage());
-        }
-    }
+	private final FileUseCase fileUseCase;
 
-    @Override
-    public Optional<User> fetchUserByUserId(@NotBlank String userId) {
-        log.info("user id to fetch user: {}",userId);
-        return userPersistence.findById(userId);
-    }
+	private final ApplicationEventPublisher eventPublisher;
 
-    @Override
-    public PageResponse<User> fetchUsers(@Valid PaginationQuery query) {
-        log.info("UserService::fetchUsers; page-offset: {}, page-size: {}, page-by: {}, page-dir: {}",query.page(),query.size(),query.sortBy(),query.sortDir());
-        return userPersistence.findAll(query);
-    }
+	@Override
+	public User registerUser(@Valid CreateUserCommand command) {
+		log.info("user registration command data: {}", command);
+		if (userPersistence.existsByEmail(command.email())) {
+			throw UserServiceException.userAlreadyExists(command.email());
+		}
+		try {
+			var newUser = new User(command.username(), command.email());
+			User savedUser = userPersistence.save(newUser);
+			eventPublisher.publishEvent(new UserRegisteredEvent(savedUser));
+			log.info("saved user info: {}", savedUser);
+			return savedUser;
+		}
+		catch (Exception ex) {
+			log.info("Exception occurred while registering a new user: {}", ex.getMessage(), ex);
+			throw UserServiceException.registrationFailed(ex.getMessage());
+		}
+	}
 
-    @Override
-    public void updateStatus(@NotBlank String userId,@NotNull UserStatus status) {
-        var savedUser = userPersistence.findById(userId).orElseThrow(() -> UserServiceException.userNotFound(userId));
-        savedUser.updateStatus(status);
-        log.info("UserService::fetchUsers, user-name: {}, current-status: {}",savedUser.getUsername(),status);
-        savedUser = userPersistence.save(savedUser);
-        eventPublisher.publishEvent(new UserStatusUpdateEvent(savedUser));
-        log.info("UserService::fetchUsers, user-name: {}, current-status: {}",savedUser.getUsername(),status);
-    }
+	@Override
+	public Optional<User> fetchUserByUserId(@NotBlank String userId) {
+		log.info("user id to fetch user: {}", userId);
+		return userPersistence.findById(userId);
+	}
 
-    @Override
-    public List<User> fetchUsersById(List<String> userIds) {
-        return userPersistence.fetchUsersById(userIds);
-    }
+	@Override
+	public PageResponse<User> fetchUsers(@Valid PaginationQuery query) {
+		log.info("UserService::fetchUsers; page-offset: {}, page-size: {}, page-by: {}, page-dir: {}", query.page(),
+				query.size(), query.sortBy(), query.sortDir());
+		return userPersistence.findAll(query);
+	}
 
-    @Override
-    public String uploadUserProfile(@NotBlank String userId,@Valid FileUploadCommand command) {
-        var savedUser = userPersistence.findById(userId).orElseThrow(() -> UserServiceException.userNotFound(userId));
-        fileUseCase.uploadFile(command.filePath().replaceAll("\\s+", ""), command.inputStream(),command.size(),command.contentType());
-        log.info("user profile upload");
-        String profileUrl = fileUseCase.generatePresignedUrl(command.filePath(), 7, TimeUnit.DAYS);
-        savedUser.setImagePath(command.filePath());
-        userPersistence.save(savedUser);
-        return profileUrl;
-    }
+	@Override
+	public void updateStatus(@NotBlank String userId, @NotNull UserStatus status) {
+		var savedUser = userPersistence.findById(userId).orElseThrow(() -> UserServiceException.userNotFound(userId));
+		savedUser.updateStatus(status);
+		log.info("UserService::fetchUsers, user-name: {}, current-status: {}", savedUser.getUsername(), status);
+		savedUser = userPersistence.save(savedUser);
+		eventPublisher.publishEvent(new UserStatusUpdateEvent(savedUser));
+		log.info("UserService::fetchUsers, user-name: {}, current-status: {}", savedUser.getUsername(), status);
+	}
 
-    @Override
-    public String fetchProfileUrl(@NotNull User user) {
-        if (user.getImagePath()==null){
-            return null;
-        }
-        return fileUseCase.generatePresignedUrl(user.getImagePath(), 7, TimeUnit.DAYS);
-    }
+	@Override
+	public List<User> fetchUsersById(List<String> userIds) {
+		return userPersistence.fetchUsersById(userIds);
+	}
+
+	@Override
+	public String uploadUserProfile(@NotBlank String userId, @Valid FileUploadCommand command) {
+		var savedUser = userPersistence.findById(userId).orElseThrow(() -> UserServiceException.userNotFound(userId));
+		fileUseCase.uploadFile(command.filePath().replaceAll("\\s+", ""), command.inputStream(), command.size(),
+				command.contentType());
+		log.info("user profile upload");
+		String profileUrl = fileUseCase.generatePresignedUrl(command.filePath(), 7, TimeUnit.DAYS);
+		savedUser.setImagePath(command.filePath());
+		userPersistence.save(savedUser);
+		return profileUrl;
+	}
+
+	@Override
+	public String fetchProfileUrl(@NotNull User user) {
+		if (user.getImagePath() == null) {
+			return null;
+		}
+		return fileUseCase.generatePresignedUrl(user.getImagePath(), 7, TimeUnit.DAYS);
+	}
+
 }

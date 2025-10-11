@@ -28,52 +28,49 @@ import static com.loop.troop.chat.infrastructure.shared.mapper.ChatRoomMapper.to
 @RequiredArgsConstructor
 public class ChatRoomJpaPersistenceAdapter implements ChatRoomPersistence {
 
-    private final ChatRoomRepository chatRoomRepository;
-    @Override
-    public ChatRoom save(ChatRoom chatRoom) {
-        ChatRoomEntity savedChatRoom = chatRoomRepository.save(toEntity(chatRoom));
-        return toDomain(savedChatRoom);
-    }
+	private final ChatRoomRepository chatRoomRepository;
 
-    @Override
-    public Optional<ChatRoom> findById(String chatRoomId) {
-        if (!Utility.isValidUUid(chatRoomId)){
-            throw new IllegalArgumentException("Invalid UUID format");
-        }
-        return chatRoomRepository.findById(UUID.fromString(chatRoomId)).map(ChatRoomMapper::toDomain);
-    }
+	@Override
+	public ChatRoom save(ChatRoom chatRoom) {
+		ChatRoomEntity savedChatRoom = chatRoomRepository.save(toEntity(chatRoom));
+		return toDomain(savedChatRoom);
+	}
 
+	@Override
+	public Optional<ChatRoom> findById(String chatRoomId) {
+		if (!Utility.isValidUUid(chatRoomId)) {
+			throw new IllegalArgumentException("Invalid UUID format");
+		}
+		return chatRoomRepository.findById(UUID.fromString(chatRoomId)).map(ChatRoomMapper::toDomain);
+	}
 
-    @Override
-    public PageResponse<ChatRoom> findAll(PaginationQuery paginationQuery) {
-        // Set defaults if null
-        var page = paginationQuery.page() != null ? paginationQuery.page() : 0;
-        var size = paginationQuery.size() != null ? paginationQuery.size() : 10;
-        String username = "type";
-        var sortBy = paginationQuery.sortBy() != null ? paginationQuery.sortBy() : username;
-        var direction = "desc".equalsIgnoreCase(paginationQuery.sortDir()) ? Sort.Direction.DESC : Sort.Direction.ASC;
-        var pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        log.info("Pageable data: {}",pageable);
-        var entityPage = chatRoomRepository.findAll(pageable);
+	@Override
+	public PageResponse<ChatRoom> findAll(PaginationQuery paginationQuery) {
+		// Set defaults if null
+		var page = paginationQuery.page() != null ? paginationQuery.page() : 0;
+		var size = paginationQuery.size() != null ? paginationQuery.size() : 10;
+		String username = "type";
+		var sortBy = paginationQuery.sortBy() != null ? paginationQuery.sortBy() : username;
+		var direction = "desc".equalsIgnoreCase(paginationQuery.sortDir()) ? Sort.Direction.DESC : Sort.Direction.ASC;
+		var pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+		log.info("Pageable data: {}", pageable);
+		var entityPage = chatRoomRepository.findAll(pageable);
 
-        var users = entityPage.getContent().stream()
-                .map(ChatRoomMapper::toDomain)
-                .toList();
+		var users = entityPage.getContent().stream().map(ChatRoomMapper::toDomain).toList();
 
-        return new PageResponse<>(
-                users,
-                entityPage.getNumber(),
-                entityPage.getSize(),
-                entityPage.getTotalElements(),
-                entityPage.getTotalPages()
-        );
-    }
+		return new PageResponse<>(users, entityPage.getNumber(), entityPage.getSize(), entityPage.getTotalElements(),
+				entityPage.getTotalPages());
+	}
 
-    @Override
-    public List<User> getRoomParticipant(String chatRoomId) {
-        if (!Utility.isValidUUid(chatRoomId)){
-            throw new IllegalArgumentException("Invalid UUID format");
-        }
-        return chatRoomRepository.findParticipantByRoomId(UUID.fromString(chatRoomId)).stream().map(UserMapper::toDomain).toList();
-    }
+	@Override
+	public List<User> getRoomParticipant(String chatRoomId) {
+		if (!Utility.isValidUUid(chatRoomId)) {
+			throw new IllegalArgumentException("Invalid UUID format");
+		}
+		return chatRoomRepository.findParticipantByRoomId(UUID.fromString(chatRoomId))
+			.stream()
+			.map(UserMapper::toDomain)
+			.toList();
+	}
+
 }

@@ -8,10 +8,17 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserPersistence {
-    User save(User user);
-    Optional<User> findById(String userId);
-    boolean existsByEmail(String email);
-    PageResponse<User> findAll(PaginationQuery paginationQuery);
-    void updateStatus(String userId, UserStatus status);
-    List<User> fetchUsersById(List<String> userIds);
+
+	User save(User user);
+
+	Optional<User> findById(String userId);
+
+	boolean existsByEmail(String email);
+
+	PageResponse<User> findAll(PaginationQuery paginationQuery);
+
+	void updateStatus(String userId, UserStatus status);
+
+	List<User> fetchUsersById(List<String> userIds);
+
 }

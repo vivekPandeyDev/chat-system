@@ -10,8 +10,11 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class MinioConfig {
-    private String url;
-    private String accessKey;
-    private String secretKey;
+
+	private String url;
+
+	private String accessKey;
+
+	private String secretKey;
 
 }

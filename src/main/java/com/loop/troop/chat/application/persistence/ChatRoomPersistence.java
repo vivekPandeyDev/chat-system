@@ -6,7 +6,11 @@ import com.loop.troop.chat.domain.ChatRoom;
 import java.util.Optional;
 
 public interface ChatRoomPersistence {
-    ChatRoom save(ChatRoom chatRoom);
-    Optional<ChatRoom> findById(String chatRoomId);
-    PageResponse<ChatRoom> findAll(PaginationQuery paginationQuery);
+
+	ChatRoom save(ChatRoom chatRoom);
+
+	Optional<ChatRoom> findById(String chatRoomId);
+
+	PageResponse<ChatRoom> findAll(PaginationQuery paginationQuery);
+
 }

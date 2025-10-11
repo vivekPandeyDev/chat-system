@@ -13,13 +13,20 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-
 public interface UserUseCase {
-    User registerUser(@Valid CreateUserCommand command);
-    Optional<User> fetchUserByUserId(@NotBlank String userId);
-    PageResponse<User> fetchUsers(@Valid PaginationQuery paginationQuery);
-    void updateStatus(@NotBlank String userId,@NotNull UserStatus status);
-    String uploadUserProfile(@NotBlank String userId,@Valid FileUploadCommand command);
-    String fetchProfileUrl(@NotNull User user);
-    List<User> fetchUsersById(@NotNull List<String> userIds);
+
+	User registerUser(@Valid CreateUserCommand command);
+
+	Optional<User> fetchUserByUserId(@NotBlank String userId);
+
+	PageResponse<User> fetchUsers(@Valid PaginationQuery paginationQuery);
+
+	void updateStatus(@NotBlank String userId, @NotNull UserStatus status);
+
+	String uploadUserProfile(@NotBlank String userId, @Valid FileUploadCommand command);
+
+	String fetchProfileUrl(@NotNull User user);
+
+	List<User> fetchUsersById(@NotNull List<String> userIds);
+
 }

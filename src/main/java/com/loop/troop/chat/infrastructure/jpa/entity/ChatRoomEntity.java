@@ -17,37 +17,36 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class ChatRoomEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID roomId;
 
-    @Enumerated(EnumType.STRING)
-    private RoomType type;
+	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private UUID roomId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by")
-    private UserEntity createdBy;
+	@Enumerated(EnumType.STRING)
+	private RoomType type;
 
-    private LocalDateTime createdAt;
-    private boolean isActive;
-    private String groupName;
-    private boolean isPermanent;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "created_by")
+	private UserEntity createdBy;
 
-    // Participants: used for both single and group chat
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "chat_room_participants",
-            joinColumns = @JoinColumn(name = "room_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<UserEntity> participants = new ArrayList<>();
+	private LocalDateTime createdAt;
 
-    // Admins for group chats
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "chat_room_admins",
-            joinColumns = @JoinColumn(name = "room_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<UserEntity> admins = new ArrayList<>();
+	private boolean isActive;
+
+	private String groupName;
+
+	private boolean isPermanent;
+
+	// Participants: used for both single and group chat
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "chat_room_participants", joinColumns = @JoinColumn(name = "room_id"),
+			inverseJoinColumns = @JoinColumn(name = "user_id"))
+	private List<UserEntity> participants = new ArrayList<>();
+
+	// Admins for group chats
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "chat_room_admins", joinColumns = @JoinColumn(name = "room_id"),
+			inverseJoinColumns = @JoinColumn(name = "user_id"))
+	private List<UserEntity> admins = new ArrayList<>();
+
 }

@@ -17,41 +17,60 @@ import java.util.Objects;
 @Setter
 @Slf4j
 public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
-    protected final String roomId;
-    protected final RoomType type;
-    protected final User createdBy;
-    protected final LocalDateTime createdAt;
-    protected boolean isActive;
-    protected final List<User> participants = new ArrayList<>();
-    protected final List<ChatRoomObserver> observers = new ArrayList<>();
 
-    protected ChatRoom(String roomId, RoomType type, User createdBy) {
-        this.roomId = roomId;
-        this.type = type;
-        this.createdBy = createdBy;
-        this.createdAt = LocalDateTime.now();
-        this.isActive = true;
-    }
+	protected final String roomId;
 
-    public void addParticipant(User user) {
-        if (Objects.isNull(user)){
-            throw new IllegalArgumentException("Participant cannot be null in order to add in chat room");
-        }
-        participants.add(user);
-    }
-    public void removeParticipant(User user) { participants.remove(user); }
-    public List<User> getParticipants() { return List.copyOf(participants); }
+	protected final RoomType type;
 
-    public void addObserver(ChatRoomObserver obs) { observers.add(obs); }
-    public void removeObserver(ChatRoomObserver obs) { observers.remove(obs); }
+	protected final User createdBy;
 
-    public void notifyObservers(ChatEvent event) {
-        observers.forEach(o -> o.update(event));
-    }
+	protected final LocalDateTime createdAt;
 
-    public void sendMessage(Message msg) {
-        var event = new ChatEvent(EventType.MESSAGE_SENT, roomId, msg, LocalDateTime.now());
-        log.info("message send event created : {}",event);
-        notifyObservers(event);
-    }
+	protected boolean isActive;
+
+	protected final List<User> participants = new ArrayList<>();
+
+	protected final List<ChatRoomObserver> observers = new ArrayList<>();
+
+	protected ChatRoom(String roomId, RoomType type, User createdBy) {
+		this.roomId = roomId;
+		this.type = type;
+		this.createdBy = createdBy;
+		this.createdAt = LocalDateTime.now();
+		this.isActive = true;
+	}
+
+	public void addParticipant(User user) {
+		if (Objects.isNull(user)) {
+			throw new IllegalArgumentException("Participant cannot be null in order to add in chat room");
+		}
+		participants.add(user);
+	}
+
+	public void removeParticipant(User user) {
+		participants.remove(user);
+	}
+
+	public List<User> getParticipants() {
+		return List.copyOf(participants);
+	}
+
+	public void addObserver(ChatRoomObserver obs) {
+		observers.add(obs);
+	}
+
+	public void removeObserver(ChatRoomObserver obs) {
+		observers.remove(obs);
+	}
+
+	public void notifyObservers(ChatEvent event) {
+		observers.forEach(o -> o.update(event));
+	}
+
+	public void sendMessage(Message msg) {
+		var event = new ChatEvent(EventType.MESSAGE_SENT, roomId, msg, LocalDateTime.now());
+		log.info("message send event created : {}", event);
+		notifyObservers(event);
+	}
+
 }

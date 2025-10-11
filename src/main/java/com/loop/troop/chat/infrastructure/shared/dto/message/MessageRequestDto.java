@@ -1,6 +1,5 @@
 package com.loop.troop.chat.infrastructure.shared.dto.message;
 
-
 import com.loop.troop.chat.domain.enums.MessageType;
 import com.loop.troop.chat.infrastructure.web.validator.EnumValue;
 import jakarta.validation.constraints.NotBlank;
@@ -9,13 +8,14 @@ import lombok.Data;
 @Data
 public class MessageRequestDto {
 
-    @NotBlank(message = "Content cannot be blank")
-    private String content;
+	@NotBlank(message = "Content cannot be blank")
+	private String content;
 
-    @NotBlank(message = "Sender ID cannot be blank")
-    private String senderId;
+	@NotBlank(message = "Sender ID cannot be blank")
+	private String senderId;
 
-    @NotBlank(message = "Message Type is required")
-    @EnumValue(enumClass = MessageType.class,message = "message type TEXT, IMAGE, VIDEO, FILE")
-    private String messageType;
+	@NotBlank(message = "Message Type is required")
+	@EnumValue(enumClass = MessageType.class, message = "message type TEXT, IMAGE, VIDEO, FILE")
+	private String messageType;
+
 }

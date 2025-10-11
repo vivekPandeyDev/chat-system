@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, UUID> {
 
+	@Query("select c.participants from ChatRoomEntity c where c.roomId = ?1")
+	List<UserEntity> findParticipantByRoomId(UUID roomId);
 
-    @Query("select c.participants from ChatRoomEntity c where c.roomId = ?1")
-    List<UserEntity> findParticipantByRoomId(UUID roomId);
 }

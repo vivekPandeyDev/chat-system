@@ -26,53 +26,48 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ChatController {
 
-    private final DirectChatService directChatService;
-    private final GroupChatService groupChatService;
-    private final ChatRoomApplicationService chatRoomApplicationService;
-    private final UserService userService;
-    // Send a message
-    @PostMapping("/{roomId}/message")
-    public ResponseEntity<MessageResponseDto> sendMessage(
-            @PathVariable String roomId,
-            @Valid @RequestBody MessageRequestDto request
-    ) {
-        // Build sender domain object
-        var sender = userService.fetchUserByUserId(request.getSenderId()).orElseThrow(() -> UserServiceException.userNotFound(request.getSenderId()));
+	private final DirectChatService directChatService;
 
-        // Fetch or create domain ChatRoom (simplified here, ideally fetch from DB)
-        ChatRoom room = chatRoomApplicationService.getRoomById(roomId);
+	private final GroupChatService groupChatService;
 
-        // Build message domain object
-        Message msg = new Message(
-                UUID.randomUUID().toString(),
-                room,
-                sender,
-                request.getContent(),
-                MessageType.valueOf(request.getMessageType())
-        );
-        sender.sendMessage(room,msg);
+	private final ChatRoomApplicationService chatRoomApplicationService;
 
-        // Select proper chat service
-        ChatService svc = room.getType().equals(RoomType.GROUP) ? groupChatService : directChatService;
+	private final UserService userService;
 
-        svc.sendMessage(msg);
+	// Send a message
+	@PostMapping("/{roomId}/message")
+	public ResponseEntity<MessageResponseDto> sendMessage(@PathVariable String roomId,
+			@Valid @RequestBody MessageRequestDto request) {
+		// Build sender domain object
+		var sender = userService.fetchUserByUserId(request.getSenderId())
+			.orElseThrow(() -> UserServiceException.userNotFound(request.getSenderId()));
 
-        return ResponseEntity.ok(MessageMapper.toResponseDto(msg));
-    }
+		// Fetch or create domain ChatRoom (simplified here, ideally fetch from DB)
+		ChatRoom room = chatRoomApplicationService.getRoomById(roomId);
 
-    // Fetch messages
-    @GetMapping("/{roomId}/messages")
-    public ResponseEntity<List<MessageResponseDto>> fetchMessages(
-            @PathVariable String roomId,
-            @RequestParam(defaultValue = "DIRECT") String roomType
-    ) {
-        ChatService svc = roomType.equalsIgnoreCase("GROUP") ? groupChatService : directChatService;
-        List<Message> messages = svc.fetchMessages(roomId);
+		// Build message domain object
+		Message msg = new Message(UUID.randomUUID().toString(), room, sender, request.getContent(),
+				MessageType.valueOf(request.getMessageType()));
+		sender.sendMessage(room, msg);
 
-        List<MessageResponseDto> response = messages.stream()
-                .map(MessageMapper::toResponseDto)
-                .toList();
+		// Select proper chat service
+		ChatService svc = room.getType().equals(RoomType.GROUP) ? groupChatService : directChatService;
 
-        return ResponseEntity.ok(response);
-    }
+		svc.sendMessage(msg);
+
+		return ResponseEntity.ok(MessageMapper.toResponseDto(msg));
+	}
+
+	// Fetch messages
+	@GetMapping("/{roomId}/messages")
+	public ResponseEntity<List<MessageResponseDto>> fetchMessages(@PathVariable String roomId,
+			@RequestParam(defaultValue = "DIRECT") String roomType) {
+		ChatService svc = roomType.equalsIgnoreCase("GROUP") ? groupChatService : directChatService;
+		List<Message> messages = svc.fetchMessages(roomId);
+
+		List<MessageResponseDto> response = messages.stream().map(MessageMapper::toResponseDto).toList();
+
+		return ResponseEntity.ok(response);
+	}
+
 }

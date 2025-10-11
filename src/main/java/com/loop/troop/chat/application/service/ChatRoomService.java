@@ -22,31 +22,37 @@ import java.util.Optional;
 @Slf4j
 public class ChatRoomService implements ChatRoomUseCase {
 
-    private final UserPersistence userPersistence;
-    private final ChatRoomPersistence chatRoomPersistence;
+	private final UserPersistence userPersistence;
 
-    @Override
-    public String createRoom(CreateChatRoomCommand request) {
-        var owner = userPersistence.findById(request.getCreatedById()).orElseThrow(() -> UserServiceException.userNotFound(request.getCreatedById()));
-        ChatRoom room;
-        if (request.getRoomType().equals(RoomType.SINGLE)){
-            var otherParticipant = userPersistence.findById(request.getOtherParticipantId()).orElseThrow(() -> UserServiceException.userNotFound(request.getCreatedById()));
-            room = new SingleChatRoom(null,owner, otherParticipant);
-        }else {
-            var participants= userPersistence.fetchUsersById(request.getInitialParticipantIds());
-            room = new GroupChatRoom(null,owner, request.getGroupName(), Boolean.TRUE.equals(request.getIsPermanent()), participants);
-        }
-        var savedRoom = chatRoomPersistence.save(room);
-        return savedRoom.getRoomId();
-    }
+	private final ChatRoomPersistence chatRoomPersistence;
 
-    @Override
-    public PageResponse<ChatRoom> fetchChatRoom(PaginationQuery paginationQuery) {
-        return null;
-    }
+	@Override
+	public String createRoom(CreateChatRoomCommand request) {
+		var owner = userPersistence.findById(request.getCreatedById())
+			.orElseThrow(() -> UserServiceException.userNotFound(request.getCreatedById()));
+		ChatRoom room;
+		if (request.getRoomType().equals(RoomType.SINGLE)) {
+			var otherParticipant = userPersistence.findById(request.getOtherParticipantId())
+				.orElseThrow(() -> UserServiceException.userNotFound(request.getCreatedById()));
+			room = new SingleChatRoom(null, owner, otherParticipant);
+		}
+		else {
+			var participants = userPersistence.fetchUsersById(request.getInitialParticipantIds());
+			room = new GroupChatRoom(null, owner, request.getGroupName(), Boolean.TRUE.equals(request.getIsPermanent()),
+					participants);
+		}
+		var savedRoom = chatRoomPersistence.save(room);
+		return savedRoom.getRoomId();
+	}
 
-    @Override
-    public Optional<ChatRoom> getChatRoomById(String roomId) {
-        return Optional.empty();
-    }
+	@Override
+	public PageResponse<ChatRoom> fetchChatRoom(PaginationQuery paginationQuery) {
+		return null;
+	}
+
+	@Override
+	public Optional<ChatRoom> getChatRoomById(String roomId) {
+		return Optional.empty();
+	}
+
 }

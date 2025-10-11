@@ -7,15 +7,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public final class SingleChatRoom extends ChatRoom {
-    public SingleChatRoom(String roomId, @NotNull User createdBy, @NotNull User other) {
-        super(roomId, RoomType.SINGLE, createdBy);
-        addParticipant(createdBy);
-        addParticipant(other);
-    }
-    public SingleChatRoom(String roomId, @NotNull User createdBy, @NotNull User other, List<ChatRoomObserver> chatRoomObservers) {
-        super(roomId, RoomType.SINGLE, createdBy);
-        addParticipant(createdBy);
-        addParticipant(other);
-        chatRoomObservers.forEach(this::addObserver);
-    }
+
+	public SingleChatRoom(String roomId, @NotNull User createdBy, @NotNull User other) {
+		super(roomId, RoomType.SINGLE, createdBy);
+		addParticipant(createdBy);
+		addParticipant(other);
+	}
+
+	public SingleChatRoom(String roomId, @NotNull User createdBy, @NotNull User other,
+			List<ChatRoomObserver> chatRoomObservers) {
+		super(roomId, RoomType.SINGLE, createdBy);
+		addParticipant(createdBy);
+		addParticipant(other);
+		chatRoomObservers.forEach(this::addObserver);
+	}
+
 }

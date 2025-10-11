@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class AddParticipantRequestDto {
 
-    @NotBlank(message = "User ID is required")
-    private String userId;
+	@NotBlank(message = "User ID is required")
+	private String userId;
+
 }

@@ -9,9 +9,12 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.Optional;
 
-
 public interface ChatRoomUseCase {
-    String createRoom(@Valid CreateChatRoomCommand request);
-    PageResponse<ChatRoom> fetchChatRoom(@Valid PaginationQuery paginationQuery);
-    Optional<ChatRoom> getChatRoomById(@NotNull String roomId);
+
+	String createRoom(@Valid CreateChatRoomCommand request);
+
+	PageResponse<ChatRoom> fetchChatRoom(@Valid PaginationQuery paginationQuery);
+
+	Optional<ChatRoom> getChatRoomById(@NotNull String roomId);
+
 }

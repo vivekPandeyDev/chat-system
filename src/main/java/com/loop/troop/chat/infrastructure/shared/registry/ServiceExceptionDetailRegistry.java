@@ -12,21 +12,23 @@ import java.util.Map;
 @Component
 public class ServiceExceptionDetailRegistry {
 
-    private final Map<Class<? extends ServiceException>, ServiceExceptionDetailBuilder<?>> registry = new HashMap<>();
+	private final Map<Class<? extends ServiceException>, ServiceExceptionDetailBuilder<?>> registry = new HashMap<>();
 
-    @SuppressWarnings("unchecked")
-    public ServiceExceptionDetailRegistry(List<ServiceExceptionDetailBuilder<?>> builders) {
-        // Spring injects all beans implementing ServiceExceptionDetailBuilder
-        builders.forEach(builder -> {
-            Class<?> type = GenericTypeResolver.resolveTypeArgument(builder.getClass(), ServiceExceptionDetailBuilder.class);
-            if (type != null && ServiceException.class.isAssignableFrom(type)) {
-                registry.put((Class<? extends ServiceException>) type, builder);
-            }
-        });
-    }
+	@SuppressWarnings("unchecked")
+	public ServiceExceptionDetailRegistry(List<ServiceExceptionDetailBuilder<?>> builders) {
+		// Spring injects all beans implementing ServiceExceptionDetailBuilder
+		builders.forEach(builder -> {
+			Class<?> type = GenericTypeResolver.resolveTypeArgument(builder.getClass(),
+					ServiceExceptionDetailBuilder.class);
+			if (type != null && ServiceException.class.isAssignableFrom(type)) {
+				registry.put((Class<? extends ServiceException>) type, builder);
+			}
+		});
+	}
 
-    @SuppressWarnings("unchecked")
-    public <T extends ServiceException> ServiceExceptionDetailBuilder<T> getBuilder(Class<T> exceptionClass) {
-        return (ServiceExceptionDetailBuilder<T>) registry.get(exceptionClass);
-    }
+	@SuppressWarnings("unchecked")
+	public <T extends ServiceException> ServiceExceptionDetailBuilder<T> getBuilder(Class<T> exceptionClass) {
+		return (ServiceExceptionDetailBuilder<T>) registry.get(exceptionClass);
+	}
+
 }

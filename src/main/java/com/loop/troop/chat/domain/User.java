@@ -13,38 +13,43 @@ import java.util.Objects;
 @Slf4j
 @ToString
 public class User {
-    private String userId;
-    private String username;
-    private String email;
-    private String imagePath;
-    private UserStatus status;
 
-    public User(String username, String email,String imagePath) {
-        this.imagePath = imagePath;
-        this.username = username;
-        this.email = email;
-        this.status = UserStatus.OFFLINE;
-    }
+	private String userId;
 
-    public User(String username, String email) {
-        this.username = username;
-        this.email = email;
-        this.status = UserStatus.OFFLINE;
-    }
+	private String username;
 
-    public void sendMessage(ChatRoom room, Message msg) {
-        room.sendMessage(msg);
-    }
+	private String email;
 
-    public void updateStatus(UserStatus status){
-        if (Objects.isNull(status)){
-            throw new IllegalStateException("User status is required");
-        }
-        this.status=status;
-    }
+	private String imagePath;
 
-    public void receiveNotification(Notification n) {
-        log.info("User {} received notification: {}", username, n);
-    }
+	private UserStatus status;
+
+	public User(String username, String email, String imagePath) {
+		this.imagePath = imagePath;
+		this.username = username;
+		this.email = email;
+		this.status = UserStatus.OFFLINE;
+	}
+
+	public User(String username, String email) {
+		this.username = username;
+		this.email = email;
+		this.status = UserStatus.OFFLINE;
+	}
+
+	public void sendMessage(ChatRoom room, Message msg) {
+		room.sendMessage(msg);
+	}
+
+	public void updateStatus(UserStatus status) {
+		if (Objects.isNull(status)) {
+			throw new IllegalStateException("User status is required");
+		}
+		this.status = status;
+	}
+
+	public void receiveNotification(Notification n) {
+		log.info("User {} received notification: {}", username, n);
+	}
 
 }
