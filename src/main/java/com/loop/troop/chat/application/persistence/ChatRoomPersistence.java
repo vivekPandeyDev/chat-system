@@ -3,6 +3,7 @@ package com.loop.troop.chat.application.persistence;
 import com.loop.troop.chat.application.dto.PageResponse;
 import com.loop.troop.chat.application.dto.PaginationQuery;
 import com.loop.troop.chat.domain.ChatRoom;
+
 import java.util.Optional;
 
 public interface ChatRoomPersistence {
@@ -12,5 +13,9 @@ public interface ChatRoomPersistence {
 	Optional<ChatRoom> findById(String chatRoomId);
 
 	PageResponse<ChatRoom> findAll(PaginationQuery paginationQuery);
+
+	void addParticipants(String roomId, String userId);
+
+	void removeParticipants(String roomId, String userId);
 
 }

@@ -3,12 +3,13 @@ package com.loop.troop.chat.application.command;
 import com.loop.troop.chat.domain.enums.RoomType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@Builder
 public class CreateChatRoomCommand {
 
 	@NotBlank(message = "Created by user ID is required")
@@ -23,7 +24,7 @@ public class CreateChatRoomCommand {
 	private Boolean isPermanent;
 
 	// For group chat, optional list of initial participants
-	private List<String> initialParticipantIds = new ArrayList<>();
+	private List<String> initialParticipantIds;
 
 	// For single chat, must provide second participant
 	private String otherParticipantId;

@@ -8,6 +8,8 @@ import com.loop.troop.chat.infrastructure.jpa.entity.ChatRoomEntity;
 import com.loop.troop.chat.infrastructure.jpa.entity.MessageEntity;
 import com.loop.troop.chat.infrastructure.jpa.entity.NotificationEntity;
 
+import java.util.UUID;
+
 public class NotificationMapper {
 
 	private NotificationMapper() {
@@ -17,8 +19,8 @@ public class NotificationMapper {
 		return NotificationEntity.builder()
 			.notificationId(domain.getNotificationId())
 			.user(UserMapper.toEntity(domain.getUser()))
-			.room(ChatRoomEntity.builder().roomId(domain.getRoom().getRoomId()).build()) // reference
-																							// only
+			.room(ChatRoomEntity.builder().roomId(UUID.fromString(domain.getRoom().getRoomId())).build()) // reference
+			// only
 			.message(MessageEntity.builder().messageId(domain.getMessage().getMessageId()).build()) // reference
 																									// only
 			.type(domain.getType())

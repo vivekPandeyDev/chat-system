@@ -1,70 +1,76 @@
 package com.loop.troop.chat.infrastructure.controller;
 
-import com.loop.troop.chat.application.chat.ChatRoomApplicationService;
-import com.loop.troop.chat.domain.ChatRoom;
+import com.loop.troop.chat.application.command.CreateChatRoomCommand;
+import com.loop.troop.chat.application.dto.PageResponse;
+import com.loop.troop.chat.application.dto.PaginationQuery;
+import com.loop.troop.chat.application.usecase.room.ChatRoomUseCase;
+import com.loop.troop.chat.domain.enums.RoomType;
+import com.loop.troop.chat.infrastructure.shared.dto.ApiResponse;
 import com.loop.troop.chat.infrastructure.shared.dto.room.AddParticipantRequestDto;
+import com.loop.troop.chat.infrastructure.shared.dto.room.ChatRoomResponseDto;
 import com.loop.troop.chat.infrastructure.shared.dto.room.CreateRoomRequestDto;
+import com.loop.troop.chat.infrastructure.shared.mapper.ChatRoomMapper;
+import com.loop.troop.chat.infrastructure.web.validator.ValidUUID;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/rooms")
+@RequestMapping("/api/room")
 @RequiredArgsConstructor
 @Validated
 public class ChatRoomController {
 
-	private final ChatRoomApplicationService roomService;
+	private final ChatRoomUseCase chatRoomUseCase;
 
-	// ------------------------
-	// Create a chat room
-	// ------------------------
 	@PostMapping
-	public ResponseEntity<String> createRoom(@Valid @RequestBody CreateRoomRequestDto request) {
-		try {
-			String roomId = roomService.createRoom(request);
-			return ResponseEntity.ok("Room created successfully with ID: " + roomId);
-		}
-		catch (IllegalArgumentException ex) {
-			return ResponseEntity.badRequest().body(ex.getMessage());
-		}
+	public ResponseEntity<ApiResponse<String>> createRoom(@Valid @RequestBody CreateRoomRequestDto request) {
+		String roomId = chatRoomUseCase.createRoom(roomCommand(request));
+		var chatRoomCreatedResponse = new ApiResponse<>(true, "new chat room created", roomId);
+		return ResponseEntity.ok(chatRoomCreatedResponse);
 	}
 
-	// ------------------------
-	// Fetch all rooms
-	// ------------------------
+	private CreateChatRoomCommand roomCommand(CreateRoomRequestDto request) {
+		return CreateChatRoomCommand.builder()
+			.roomType(RoomType.valueOf(request.getRoomType()))
+			.createdById(request.getCreatedById())
+			.groupName(request.getGroupName())
+			.initialParticipantIds(request.getInitialParticipantIds())
+			.otherParticipantId(request.getOtherParticipantId())
+			.isPermanent(request.getIsPermanent())
+			.build();
+	}
+
 	@GetMapping
-	public ResponseEntity<List<String>> getAllRooms() {
-		List<ChatRoom> rooms = roomService.getAllRooms();
-		List<String> roomIds = rooms.stream().map(ChatRoom::getRoomId).toList();
-		return ResponseEntity.ok(roomIds);
+	public ResponseEntity<PageResponse<ChatRoomResponseDto>> getAllRooms(
+			@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "10") Integer size,
+			@RequestParam(defaultValue = "createdAt") String sortBy,
+			@RequestParam(defaultValue = "ASC") String sortDir) {
+		var query = new PaginationQuery(offset, size, sortBy, sortDir);
+		var pageResponse = chatRoomUseCase.fetchChatRoom(query);
+		var pageResponseDto = new PageResponse<>(
+				pageResponse.content().stream().map(ChatRoomMapper::chatRoomResponseDto).toList(),
+				pageResponse.totalPages(), pageResponse.size(), pageResponse.totalElements(),
+				pageResponse.totalPages());
+		return ResponseEntity.ok(pageResponseDto);
 	}
 
-	// ------------------------
-	// Add participant to a room
-	// ------------------------
 	@PostMapping("/{roomId}/participants")
-	public ResponseEntity<String> addParticipant(@PathVariable String roomId,
+	public ResponseEntity<Void> addParticipant(@ValidUUID @PathVariable String roomId,
 			@Valid @RequestBody AddParticipantRequestDto request) {
 
-		roomService.addParticipant(roomId, request.getUserId());
+		chatRoomUseCase.addParticipants(roomId, request.getUserId());
 
-		return ResponseEntity.ok("Participant added successfully");
+		return ResponseEntity.accepted().build();
 	}
 
-	// ------------------------
-	// Remove participant from a room
-	// ------------------------
 	@DeleteMapping("/{roomId}/participants/{userId}")
-	public ResponseEntity<String> removeParticipant(@PathVariable String roomId, @PathVariable String userId) {
-
-		roomService.removeParticipant(roomId, userId);
-
-		return ResponseEntity.ok("Participant removed successfully");
+	public ResponseEntity<String> removeParticipant(@ValidUUID @PathVariable String roomId,
+			@ValidUUID @PathVariable String userId) {
+		chatRoomUseCase.removeParticipants(roomId, userId);
+		return ResponseEntity.noContent().build();
 	}
 
 }

@@ -11,10 +11,12 @@ import com.loop.troop.chat.domain.GroupChatRoom;
 import com.loop.troop.chat.domain.SingleChatRoom;
 import com.loop.troop.chat.domain.enums.RoomType;
 import com.loop.troop.chat.domain.exception.UserServiceException;
+import com.loop.troop.chat.domain.service.ChatRoomObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,6 +27,7 @@ public class ChatRoomService implements ChatRoomUseCase {
 	private final UserPersistence userPersistence;
 
 	private final ChatRoomPersistence chatRoomPersistence;
+    private final List<ChatRoomObserver> observerList;
 
 	@Override
 	public String createRoom(CreateChatRoomCommand request) {
@@ -41,18 +44,34 @@ public class ChatRoomService implements ChatRoomUseCase {
 			room = new GroupChatRoom(null, owner, request.getGroupName(), Boolean.TRUE.equals(request.getIsPermanent()),
 					participants);
 		}
+        observerList.forEach(room::addObserver);
 		var savedRoom = chatRoomPersistence.save(room);
 		return savedRoom.getRoomId();
 	}
 
 	@Override
-	public PageResponse<ChatRoom> fetchChatRoom(PaginationQuery paginationQuery) {
-		return null;
+	public PageResponse<ChatRoom> fetchChatRoom(PaginationQuery query) {
+		log.info("ChatRoomService::fetchChatRoom; page-offset: {}, page-size: {}, page-by: {}, page-dir: {}",
+				query.page(), query.size(), query.sortBy(), query.sortDir());
+		return chatRoomPersistence.findAll(query);
 	}
 
 	@Override
 	public Optional<ChatRoom> getChatRoomById(String roomId) {
-		return Optional.empty();
+		log.info("room-id to fetch user: {}", roomId);
+		return chatRoomPersistence.findById(roomId);
+	}
+
+	@Override
+	public void addParticipants(String roomId, String userId) {
+		log.info("adding participant for : {}", roomId);
+		chatRoomPersistence.addParticipants(roomId, userId);
+	}
+
+	@Override
+	public void removeParticipants(String roomId, String userId) {
+		log.info("removing participant for : {}", roomId);
+		chatRoomPersistence.removeParticipants(roomId, userId);
 	}
 
 }
