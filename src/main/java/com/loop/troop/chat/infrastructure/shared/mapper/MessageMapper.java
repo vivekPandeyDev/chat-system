@@ -4,6 +4,9 @@ import com.loop.troop.chat.domain.Message;
 import com.loop.troop.chat.infrastructure.jpa.entity.MessageEntity;
 import com.loop.troop.chat.infrastructure.shared.dto.message.MessageResponseDto;
 
+import java.util.Objects;
+import java.util.UUID;
+
 public class MessageMapper {
 
 	private MessageMapper() {
@@ -16,7 +19,7 @@ public class MessageMapper {
 		var room = ChatRoomMapper.toDomain(entity.getRoom());
 		var sender = UserMapper.toDomain(entity.getSender());
 
-		var msg = new Message(entity.getMessageId(), room, sender, entity.getContent(), entity.getType());
+		var msg = new Message(toString(entity.getMessageId()), room, sender, entity.getContent(), entity.getType());
 		msg.setStatus(entity.getStatus());
 		return msg;
 	}
@@ -26,7 +29,7 @@ public class MessageMapper {
 			return null;
 
 		return MessageEntity.builder()
-			.messageId(domain.getMessageId())
+			.messageId(toUuid(domain.getMessageId()))
 			.room(ChatRoomMapper.toEntity(domain.getRoom()))
 			.sender(UserMapper.toEntity(domain.getSender()))
 			.content(domain.getContent())
@@ -46,6 +49,24 @@ public class MessageMapper {
 			.sentAt(msg.getSentAt())
 			.status(msg.getStatus())
 			.build();
+	}
+
+	public static String toString(UUID uuid) {
+		if (Objects.nonNull(uuid)) {
+			return uuid.toString();
+		}
+		else {
+			return null;
+		}
+	}
+
+	public static UUID toUuid(String id) {
+		if (Objects.nonNull(id)) {
+			return UUID.fromString(id);
+		}
+		else {
+			return null;
+		}
 	}
 
 }

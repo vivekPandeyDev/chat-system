@@ -1,80 +1,48 @@
-// package com.loop.troop.message.infrastructure.controller;
-//
-// import com.loop.troop.message.application.message.ChatRoomApplicationService;
-// import com.loop.troop.message.application.observer.message.DirectChatService;
-// import com.loop.troop.message.application.observer.message.GroupChatService;
-// import com.loop.troop.message.application.observer.UserService;
-// import com.loop.troop.message.application.usecase.ChatRoomUseCase;
-// import com.loop.troop.message.domain.ChatRoom;
-// import com.loop.troop.message.domain.enums.MessageType;
-// import com.loop.troop.message.domain.enums.RoomType;
-// import com.loop.troop.message.domain.exception.ChatRoomServiceException;
-// import com.loop.troop.message.domain.exception.UserServiceException;
-// import com.loop.troop.message.domain.Message;
-// import com.loop.troop.message.domain.observer.ChatService;
-// import com.loop.troop.message.infrastructure.shared.dto.message.MessageRequestDto;
-// import com.loop.troop.message.infrastructure.shared.dto.message.MessageResponseDto;
-// import com.loop.troop.message.infrastructure.shared.mapper.MessageMapper;
-// import jakarta.validation.Valid;
-// import lombok.RequiredArgsConstructor;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.web.bind.annotation.*;
-//
-// import java.util.List;
-// import java.util.UUID;
-//
-// @RestController
-// @RequestMapping("/api/message")
-// @RequiredArgsConstructor
-// public class ChatController {
-//
-// private final DirectChatService directChatService;
-//
-// private final GroupChatService groupChatService;
-//
-// private final ChatRoomUseCase chatRoomUseCase;
-//
-// private final UserService userService;
-//
-// // Send a message
-// @PostMapping("/{roomId}/message")
-// public ResponseEntity<MessageResponseDto> sendMessage(@PathVariable String roomId,
-// @Valid @RequestBody MessageRequestDto request) {
-// // Build sender domain object
-// var sender = userService.fetchUserByUserId(request.getSenderId()).orElseThrow(() ->
-// UserServiceException.userNotFound(request.getSenderId()));
-//
-// var room = chatRoomUseCase.getChatRoomById(roomId).orElseThrow(() ->
-// ChatRoomServiceException.roomNotFound(roomId));
-//
-// // Build message domain object
-// Message msg = new Message(UUID.randomUUID().toString(), room, sender,
-// request.getContent(),
-// MessageType.valueOf(request.getMessageType()));
-// sender.sendMessage(room, msg);
-//
-// // Select proper message observer
-// ChatService svc = room.getType().equals(RoomType.GROUP) ? groupChatService :
-// directChatService;
-//
-// svc.sendMessage(msg);
-//
-// return ResponseEntity.ok(MessageMapper.toResponseDto(msg));
-// }
-//
-// // Fetch messages
-// @GetMapping("/{roomId}/messages")
-// public ResponseEntity<List<MessageResponseDto>> fetchMessages(@PathVariable String
-// roomId,
-// @RequestParam(defaultValue = "DIRECT") String roomType) {
-// ChatService svc = roomType.equalsIgnoreCase("GROUP") ? groupChatService :
-// directChatService;
-// List<Message> messages = svc.fetchMessages(roomId);
-//
-// List<MessageResponseDto> response =
-// messages.stream().map(MessageMapper::toResponseDto).toList();
-//
-// return ResponseEntity.ok(response);
-// }
-//
-// }
+package com.loop.troop.chat.infrastructure.controller;
+
+import com.loop.troop.chat.application.command.CreateMessageCommand;
+import com.loop.troop.chat.application.dto.PageResponse;
+import com.loop.troop.chat.application.dto.PaginationQuery;
+import com.loop.troop.chat.application.usecase.MessageUseCase;
+import com.loop.troop.chat.infrastructure.shared.dto.ApiResponse;
+import com.loop.troop.chat.infrastructure.shared.dto.message.MessageRequestDto;
+import com.loop.troop.chat.infrastructure.shared.dto.message.MessageResponseDto;
+import com.loop.troop.chat.infrastructure.shared.mapper.MessageMapper;
+import com.loop.troop.chat.infrastructure.web.validator.ValidUUID;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/chat")
+@RequiredArgsConstructor
+public class ChatController {
+
+	private final MessageUseCase messageUseCase;
+
+	@PostMapping("/{roomId}/message")
+	public ResponseEntity<ApiResponse<MessageResponseDto>> sendMessage(@ValidUUID @PathVariable String roomId,
+			@Valid @RequestBody MessageRequestDto request) {
+		var createdMessage = messageUseCase.createMessage(new CreateMessageCommand(roomId,
+				request.getSenderId(), request.getContent(), request.getMessageType()));
+		messageUseCase.sendMessage(createdMessage);
+		var messageSentResponse = new ApiResponse<>(true, "new message send",
+				MessageMapper.toResponseDto(createdMessage));
+		return ResponseEntity.ok(messageSentResponse);
+	}
+
+	@GetMapping("/{roomId}/messages")
+	public ResponseEntity<PageResponse<MessageResponseDto>> fetchMessages(@PathVariable String roomId,
+			@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "10") Integer size,
+			@RequestParam(defaultValue = "sentAt") String sortBy,
+			@RequestParam(defaultValue = "ASC") String sortDir) {
+		var query = new PaginationQuery(offset, size, sortBy, sortDir);
+		var pageResponse = messageUseCase.fetchMessageByRoomId(roomId, query);
+		var pageResponseDto = new PageResponse<>(
+				pageResponse.content().stream().map(MessageMapper::toResponseDto).toList(), pageResponse.totalPages(),
+				pageResponse.size(), pageResponse.totalElements(), pageResponse.totalPages());
+		return ResponseEntity.ok(pageResponseDto);
+	}
+
+}
