@@ -16,7 +16,7 @@ public class UserServiceExceptionDetailBuilder implements ServiceExceptionDetail
 				"Cannot update the status of this user. Verify the current status and try again.";
 			case "USER_REGISTRATION_FAILED" ->
 				"Registration could not be completed due to an internal error. Please try again later.";
-			default -> "Unexpected user service error: " + exception.getUserMessage();
+			default -> "Unexpected user observer error: " + exception.getUserMessage();
 		};
 	}
 

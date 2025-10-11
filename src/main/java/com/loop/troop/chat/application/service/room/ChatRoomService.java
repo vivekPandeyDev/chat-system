@@ -1,20 +1,21 @@
-package com.loop.troop.chat.application.service;
+package com.loop.troop.chat.application.service.room;
 
 import com.loop.troop.chat.application.command.CreateChatRoomCommand;
 import com.loop.troop.chat.application.dto.PageResponse;
 import com.loop.troop.chat.application.dto.PaginationQuery;
 import com.loop.troop.chat.application.persistence.ChatRoomPersistence;
 import com.loop.troop.chat.application.persistence.UserPersistence;
-import com.loop.troop.chat.application.usecase.room.ChatRoomUseCase;
+import com.loop.troop.chat.application.usecase.ChatRoomUseCase;
 import com.loop.troop.chat.domain.ChatRoom;
 import com.loop.troop.chat.domain.GroupChatRoom;
 import com.loop.troop.chat.domain.SingleChatRoom;
 import com.loop.troop.chat.domain.enums.RoomType;
 import com.loop.troop.chat.domain.exception.UserServiceException;
-import com.loop.troop.chat.domain.service.ChatRoomObserver;
+import com.loop.troop.chat.domain.observer.ChatRoomObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,12 +23,14 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class ChatRoomService implements ChatRoomUseCase {
 
 	private final UserPersistence userPersistence;
 
 	private final ChatRoomPersistence chatRoomPersistence;
-    private final List<ChatRoomObserver> observerList;
+
+	private final List<ChatRoomObserver> observerList;
 
 	@Override
 	public String createRoom(CreateChatRoomCommand request) {
@@ -44,7 +47,7 @@ public class ChatRoomService implements ChatRoomUseCase {
 			room = new GroupChatRoom(null, owner, request.getGroupName(), Boolean.TRUE.equals(request.getIsPermanent()),
 					participants);
 		}
-        observerList.forEach(room::addObserver);
+		observerList.forEach(room::addObserver);
 		var savedRoom = chatRoomPersistence.save(room);
 		return savedRoom.getRoomId();
 	}
@@ -60,18 +63,6 @@ public class ChatRoomService implements ChatRoomUseCase {
 	public Optional<ChatRoom> getChatRoomById(String roomId) {
 		log.info("room-id to fetch user: {}", roomId);
 		return chatRoomPersistence.findById(roomId);
-	}
-
-	@Override
-	public void addParticipants(String roomId, String userId) {
-		log.info("adding participant for : {}", roomId);
-		chatRoomPersistence.addParticipants(roomId, userId);
-	}
-
-	@Override
-	public void removeParticipants(String roomId, String userId) {
-		log.info("removing participant for : {}", roomId);
-		chatRoomPersistence.removeParticipants(roomId, userId);
 	}
 
 }

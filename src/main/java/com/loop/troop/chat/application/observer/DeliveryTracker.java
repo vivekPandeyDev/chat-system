@@ -1,7 +1,7 @@
 package com.loop.troop.chat.application.observer;
 
 import com.loop.troop.chat.domain.event.ChatEvent;
-import com.loop.troop.chat.domain.service.ChatRoomObserver;
+import com.loop.troop.chat.domain.observer.ChatRoomObserver;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "messages")
@@ -17,7 +18,8 @@ import java.time.LocalDateTime;
 public class MessageEntity {
 
 	@Id
-	private String messageId;
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private UUID messageId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "room_id")

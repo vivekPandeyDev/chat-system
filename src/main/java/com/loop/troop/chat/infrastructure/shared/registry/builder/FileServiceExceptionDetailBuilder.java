@@ -13,7 +13,7 @@ public class FileServiceExceptionDetailBuilder implements ServiceExceptionDetail
 			case "FILE_UPLOAD_FAILED" -> "An error occurred while uploading a file. Please retry.";
 			case "BUCKET_INIT_FAILED" -> "The storage bucket could not be initialized. Contact support.";
 			case "PRESIGNED_URL_FAILED" -> "Download link generation failed. Please try again later.";
-			default -> "Unexpected file service error: " + exception.getUserMessage();
+			default -> "Unexpected file observer error: " + exception.getUserMessage();
 		};
 	}
 

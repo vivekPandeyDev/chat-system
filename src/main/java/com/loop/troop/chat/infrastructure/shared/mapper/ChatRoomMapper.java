@@ -24,7 +24,7 @@ public class ChatRoomMapper {
 		ChatRoom room;
 		if (entity.getType() == RoomType.SINGLE) {
 			if (participants.isEmpty()) {
-				throw new IllegalArgumentException("Must have other participant for single chat room");
+				throw new IllegalArgumentException("Must have other participant for single message room");
 			}
 			room = new SingleChatRoom(toString(entity.getRoomId()), creator, participants.get(1));
 		}

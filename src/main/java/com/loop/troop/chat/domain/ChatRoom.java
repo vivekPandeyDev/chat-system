@@ -3,7 +3,7 @@ package com.loop.troop.chat.domain;
 import com.loop.troop.chat.domain.enums.EventType;
 import com.loop.troop.chat.domain.enums.RoomType;
 import com.loop.troop.chat.domain.event.ChatEvent;
-import com.loop.troop.chat.domain.service.ChatRoomObserver;
+import com.loop.troop.chat.domain.observer.ChatRoomObserver;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,7 @@ public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
 
 	public void addParticipant(User user) {
 		if (Objects.isNull(user)) {
-			throw new IllegalArgumentException("Participant cannot be null in order to add in chat room");
+			throw new IllegalArgumentException("Participant cannot be null in order to add in message room");
 		}
 		participants.add(user);
 	}

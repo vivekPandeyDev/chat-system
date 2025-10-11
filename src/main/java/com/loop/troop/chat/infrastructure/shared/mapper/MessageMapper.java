@@ -1,11 +1,8 @@
 package com.loop.troop.chat.infrastructure.shared.mapper;
 
 import com.loop.troop.chat.domain.Message;
-import com.loop.troop.chat.domain.service.ChatRoomObserver;
 import com.loop.troop.chat.infrastructure.jpa.entity.MessageEntity;
 import com.loop.troop.chat.infrastructure.shared.dto.message.MessageResponseDto;
-
-import java.util.List;
 
 public class MessageMapper {
 

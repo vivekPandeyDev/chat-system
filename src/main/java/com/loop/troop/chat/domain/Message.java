@@ -11,22 +11,26 @@ import java.time.LocalDateTime;
 @Setter
 public class Message {
 
-	private final String messageId;
+	private String messageId;
 
-	private final ChatRoom room;
+	private ChatRoom room;
 
-	private final User sender;
+	private User sender;
 
-	private final String content;
+	private String content;
 
-	private final MessageType type;
+	private MessageType type;
 
-	private final LocalDateTime sentAt;
+	private LocalDateTime sentAt;
 
 	private DeliveryStatus status;
 
 	public Message(String messageId, ChatRoom room, User sender, String content, MessageType type) {
+		this(room, sender, content, type);
 		this.messageId = messageId;
+	}
+
+	public Message(ChatRoom room, User sender, String content, MessageType type) {
 		this.room = room;
 		this.sender = sender;
 		this.content = content;

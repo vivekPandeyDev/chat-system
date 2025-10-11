@@ -18,15 +18,15 @@ public class CreateChatRoomCommand {
 	@NotNull(message = "Room type is required")
 	private RoomType roomType;
 
-	// Optional for group chat
+	// Optional for group message
 	private String groupName;
 
 	private Boolean isPermanent;
 
-	// For group chat, optional list of initial participants
+	// For group message, optional list of initial participants
 	private List<String> initialParticipantIds;
 
-	// For single chat, must provide second participant
+	// For single message, must provide second participant
 	private String otherParticipantId;
 
 }

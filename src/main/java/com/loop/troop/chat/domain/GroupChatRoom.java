@@ -1,7 +1,7 @@
 package com.loop.troop.chat.domain;
 
 import com.loop.troop.chat.domain.enums.RoomType;
-import com.loop.troop.chat.domain.service.ChatRoomObserver;
+import com.loop.troop.chat.domain.observer.ChatRoomObserver;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.ArrayList;

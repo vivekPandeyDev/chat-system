@@ -19,15 +19,15 @@ public class CreateRoomRequestDto {
 	@EnumValue(enumClass = RoomType.class, message = "Invalid room type")
 	private String roomType;
 
-	// Optional for group chat
+	// Optional for group message
 	private String groupName;
 
 	private Boolean isPermanent;
 
-	// For single chat, must provide second participant
+	// For single message, must provide second participant
 	private String otherParticipantId;
 
-	// For group chat, optional list of initial participants
+	// For group message, optional list of initial participants
 	private List<String> initialParticipantIds = new ArrayList<>();
 
 }

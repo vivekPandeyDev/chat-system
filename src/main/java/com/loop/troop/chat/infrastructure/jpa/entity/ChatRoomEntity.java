@@ -37,7 +37,7 @@ public class ChatRoomEntity {
 
 	private boolean isPermanent;
 
-	// Participants: used for both single and group chat
+	// Participants: used for both single and group message
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "chat_room_participants", joinColumns = @JoinColumn(name = "room_id"),
 			inverseJoinColumns = @JoinColumn(name = "user_id"))

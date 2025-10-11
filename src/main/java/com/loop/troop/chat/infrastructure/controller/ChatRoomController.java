@@ -3,7 +3,8 @@ package com.loop.troop.chat.infrastructure.controller;
 import com.loop.troop.chat.application.command.CreateChatRoomCommand;
 import com.loop.troop.chat.application.dto.PageResponse;
 import com.loop.troop.chat.application.dto.PaginationQuery;
-import com.loop.troop.chat.application.usecase.room.ChatRoomUseCase;
+import com.loop.troop.chat.application.usecase.ChatRoomUseCase;
+import com.loop.troop.chat.application.usecase.GroupChatRoomUseCase;
 import com.loop.troop.chat.domain.enums.RoomType;
 import com.loop.troop.chat.infrastructure.shared.dto.ApiResponse;
 import com.loop.troop.chat.infrastructure.shared.dto.room.AddParticipantRequestDto;
@@ -25,10 +26,12 @@ public class ChatRoomController {
 
 	private final ChatRoomUseCase chatRoomUseCase;
 
+	private final GroupChatRoomUseCase groupChatRoomUseCase;
+
 	@PostMapping
 	public ResponseEntity<ApiResponse<String>> createRoom(@Valid @RequestBody CreateRoomRequestDto request) {
 		String roomId = chatRoomUseCase.createRoom(roomCommand(request));
-		var chatRoomCreatedResponse = new ApiResponse<>(true, "new chat room created", roomId);
+		var chatRoomCreatedResponse = new ApiResponse<>(true, "new message room created", roomId);
 		return ResponseEntity.ok(chatRoomCreatedResponse);
 	}
 
@@ -61,7 +64,7 @@ public class ChatRoomController {
 	public ResponseEntity<Void> addParticipant(@ValidUUID @PathVariable String roomId,
 			@Valid @RequestBody AddParticipantRequestDto request) {
 
-		chatRoomUseCase.addParticipants(roomId, request.getUserId());
+		groupChatRoomUseCase.addParticipants(roomId, request.getUserId());
 
 		return ResponseEntity.accepted().build();
 	}
@@ -69,7 +72,7 @@ public class ChatRoomController {
 	@DeleteMapping("/{roomId}/participants/{userId}")
 	public ResponseEntity<String> removeParticipant(@ValidUUID @PathVariable String roomId,
 			@ValidUUID @PathVariable String userId) {
-		chatRoomUseCase.removeParticipants(roomId, userId);
+		groupChatRoomUseCase.removeParticipants(roomId, userId);
 		return ResponseEntity.noContent().build();
 	}
 
