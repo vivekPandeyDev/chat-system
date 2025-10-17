@@ -32,12 +32,13 @@ public class TokenController {
 
     @PostMapping("/generate")
     public ResponseEntity<ApiResponse<JwtResponse>> generateToken(@Valid @RequestBody GenerateTokenRequest request) {
-        userUseCase.fetchUserByEmail(request.getEmail()).orElseThrow(() -> UserServiceException.userNotFoundWithEmail(request.getEmail()));
+        var email = request.email();
+        userUseCase.fetchUserByEmail(email).orElseThrow(() -> UserServiceException.userNotFoundWithEmail(email));
         Key key = Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes(StandardCharsets.UTF_8));
         Instant now = Instant.now();
         Instant expiry = now.plus(jwtConfig.getExpiryMinutes(), ChronoUnit.MINUTES);
         String token = Jwts.builder()
-                .subject(request.getEmail())
+                .subject(email)
                 .issuer(jwtConfig.getIssuer())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiry))
@@ -45,7 +46,7 @@ public class TokenController {
                 .compact();
 
         var response = new JwtResponse(token, now.getEpochSecond(), expiry.getEpochSecond(),
-                jwtConfig.getExpiryMinutes() * 60L, jwtConfig.getIssuer(), request.getEmail());
+                jwtConfig.getExpiryMinutes() * 60L, jwtConfig.getIssuer(), email);
         return ResponseEntity.ok(new ApiResponse<>(true, "Token generated successfully", response));
 
     }

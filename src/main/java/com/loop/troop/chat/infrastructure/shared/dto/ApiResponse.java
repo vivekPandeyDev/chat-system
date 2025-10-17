@@ -1,16 +1,10 @@
 package com.loop.troop.chat.infrastructure.shared.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
-public class ApiResponse<T> {
-
-	private final boolean success; // true if request succeeded
-
-	private final String message; // human-readable message
-
-	private final T data; // payload; null if none
+/**
+ * @param success true if request succeeded
+ * @param message human-readable message
+ * @param data    payload; null if none
+ */
+public record ApiResponse<T>(boolean success, String message, T data) {
 
 }

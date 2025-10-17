@@ -39,14 +39,14 @@ public class UserMapper {
 		return entity;
 	}
 
-	public static UserResponseDto toResponseDto(User domain, String profileUrl) {
-		return UserResponseDto.builder()
-			.userId(domain.getUserId())
-			.username(domain.getUsername())
-			.email(domain.getEmail())
-			.avatarUrl(profileUrl)
-			.status(domain.getStatus())
-			.build();
-	}
+    public static UserResponseDto toResponseDto(User domain, String profileUrl) {
+        return new UserResponseDto(
+                domain.getUserId(),
+                domain.getUsername(),
+                domain.getEmail(),
+                profileUrl,          // avatarUrl
+                domain.getStatus()
+        );
+    }
 
 }

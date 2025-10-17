@@ -13,7 +13,7 @@ public class UserServiceException extends ServiceException {
 				HttpStatus.NOT_FOUND);
 	}
     public static UserServiceException userNotFoundWithEmail(String email) {
-        return new UserServiceException("USER_NOT_FOUND", "User with email '" + email + "' not found",
+        return new UserServiceException("USER_EMAIL_NOT_FOUND", "User with email '" + email + "' not found",
                 HttpStatus.NOT_FOUND);
     }
 

@@ -2,22 +2,16 @@ package com.loop.troop.chat.infrastructure.shared.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.loop.troop.chat.domain.enums.UserStatus;
-import lombok.Builder;
-import lombok.Data;
 
-@Data
-@Builder
-public class UserResponseDto {
+public record UserResponseDto(
 
-	private String userId;
+        String userId,
+        String username,
+        String email,
 
-	private String username;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        String avatarUrl,
 
-	private String email;
-
-	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private String avatarUrl;
-
-	private UserStatus status;
-
+        UserStatus status
+) {
 }

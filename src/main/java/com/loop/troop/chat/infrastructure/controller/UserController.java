@@ -30,7 +30,7 @@ public class UserController {
 
 	@PostMapping
 	public ResponseEntity<ApiResponse<UserResponseDto>> createUser(@RequestBody CreateUserRequestDto request) {
-		var user = userUserCase.registerUser(new CreateUserCommand(request.getUsername(), request.getEmail()));
+		var user = userUserCase.registerUser(new CreateUserCommand(request.username(), request.email()));
 		var userFetchResponse = new ApiResponse<>(true, "User registered successfully",
 				UserMapper.toResponseDto(user, userUserCase.fetchProfileUrl(user)));
 		return ResponseEntity.ok(userFetchResponse);
