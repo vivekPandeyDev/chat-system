@@ -24,8 +24,8 @@ public class ChatController {
 	@PostMapping("/{roomId}/message")
 	public ResponseEntity<ApiResponse<MessageResponseDto>> sendMessage(@ValidUUID @PathVariable String roomId,
 			@Valid @RequestBody MessageRequestDto request) {
-		var createdMessage = messageUseCase.createMessage(new CreateMessageCommand(roomId,
-				request.getSenderId(), request.getContent(), request.getMessageType()));
+		var createdMessage = messageUseCase.createMessage(new CreateMessageCommand(roomId, request.getSenderId(),
+				request.getContent(), request.getMessageType()));
 		messageUseCase.sendMessage(createdMessage);
 		var messageSentResponse = new ApiResponse<>(true, "new message send",
 				MessageMapper.toResponseDto(createdMessage));
@@ -35,8 +35,7 @@ public class ChatController {
 	@GetMapping("/{roomId}/messages")
 	public ResponseEntity<PageResponse<MessageResponseDto>> fetchMessages(@PathVariable String roomId,
 			@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "10") Integer size,
-			@RequestParam(defaultValue = "sentAt") String sortBy,
-			@RequestParam(defaultValue = "ASC") String sortDir) {
+			@RequestParam(defaultValue = "sentAt") String sortBy, @RequestParam(defaultValue = "ASC") String sortDir) {
 		var query = new PaginationQuery(offset, size, sortBy, sortDir);
 		var pageResponse = messageUseCase.fetchMessageByRoomId(roomId, query);
 		var pageResponseDto = new PageResponse<>(

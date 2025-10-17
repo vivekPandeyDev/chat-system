@@ -30,3 +30,10 @@ minio:
   url: http://${CHAT_SYSTEM_MINIO_HOST}:${CHAT_SYSTEM_MINIO_PORT}
   access-key: ${CHAT_SYSTEM_MINIO_ACCESS_KEY}
   secret-key: ${CHAT_SYSTEM_MINIO_SECRET_KEY}
+# ===============================
+#  JWT Configuration
+# ===============================
+jwt:
+  secret: ${JWT_SECRET:change-me-in-prod-please-very-strong-secret-key}
+  issuer: chat-system
+  expiry-minutes: 60

@@ -97,4 +97,9 @@ public class UserJpaPersistenceAdapter implements UserPersistence {
 		return userRepository.findByUserIdIn(ids).stream().map(UserMapper::toDomain).toList();
 	}
 
+    @Override
+    public Optional<User> findUserByEmail(String email) {
+        return userRepository.findByEmail(email).map(UserMapper::toDomain);
+    }
+
 }

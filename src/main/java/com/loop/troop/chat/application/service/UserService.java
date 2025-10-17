@@ -86,7 +86,12 @@ public class UserService implements UserUseCase {
 		return userPersistence.fetchUsersById(userIds);
 	}
 
-	@Override
+    @Override
+    public Optional<User> fetchUserByEmail(String email) {
+        return userPersistence.findUserByEmail(email);
+    }
+
+    @Override
 	public String uploadUserProfile(@NotBlank String userId, @Valid FileUploadCommand command) {
 		var savedUser = userPersistence.findById(userId).orElseThrow(() -> UserServiceException.userNotFound(userId));
 		fileUseCase.uploadFile(command.filePath().replaceAll("\\s+", ""), command.inputStream(), command.size(),

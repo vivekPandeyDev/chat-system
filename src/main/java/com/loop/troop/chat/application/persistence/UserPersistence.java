@@ -21,4 +21,5 @@ public interface UserPersistence {
 
 	List<User> fetchUsersById(List<String> userIds);
 
+    Optional<User> findUserByEmail(String email);
 }

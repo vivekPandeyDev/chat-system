@@ -12,7 +12,8 @@ public class MessageRequestDto {
 	@NotBlank(message = "Sender ID cannot be blank")
 	@ValidUUID
 	private String senderId;
-    @NotBlank(message = "Content cannot be blank")
+
+	@NotBlank(message = "Content cannot be blank")
 	private String content;
 
 	@NotBlank(message = "Message Type is required")

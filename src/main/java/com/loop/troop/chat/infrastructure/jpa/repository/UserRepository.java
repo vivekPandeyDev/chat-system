@@ -6,13 +6,15 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
-	boolean existsByEmail(String email);
+    boolean existsByEmail(String email);
 
-	List<UserEntity> findByUserIdIn(Collection<UUID> userIds);
+    List<UserEntity> findByUserIdIn(Collection<UUID> userIds);
 
+    Optional<UserEntity> findByEmail(String email);
 }
