@@ -21,6 +21,7 @@ public class ChatRoomMapper {
 
 		var creator = UserMapper.toDomain(entity.getCreatedBy());
 		var participants = entity.getParticipants().stream().map(UserMapper::toDomain).toList();
+        var admins = entity.getAdmins().stream().map(UserMapper::toDomain).toList();
 		ChatRoom room;
 		if (entity.getType() == RoomType.SINGLE) {
 			if (participants.isEmpty()) {
@@ -28,18 +29,12 @@ public class ChatRoomMapper {
 			}
 			room = new SingleChatRoom(toString(entity.getRoomId()), creator, participants.get(1));
 		}
-		else { // GROUP
-			var group = new GroupChatRoom(toString(entity.getRoomId()), creator, entity.getGroupName(),
-					entity.isPermanent(), participants);
-			group.setActive(entity.isActive());
-			// map participants
-			entity.getParticipants().forEach(u -> group.addParticipant(UserMapper.toDomain(u)));
-			// map admins
-			entity.getAdmins().forEach(u -> group.getAdmins().add(UserMapper.toDomain(u)));
-			room = group;
+		else {
+			room = new GroupChatRoom(toString(entity.getRoomId()), creator, entity.getGroupName(),
+					entity.isPermanent(), participants,admins);
 		}
 
-		room.setActive(entity.isActive());
+        room.setActive(entity.isActive());
 		return room;
 	}
 

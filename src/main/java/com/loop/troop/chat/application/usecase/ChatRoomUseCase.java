@@ -1,6 +1,5 @@
 package com.loop.troop.chat.application.usecase;
 
-import com.loop.troop.chat.application.command.CreateGroupChatRoomCommand;
 import com.loop.troop.chat.application.dto.PageResponse;
 import com.loop.troop.chat.application.dto.PaginationQuery;
 import com.loop.troop.chat.domain.ChatRoom;
@@ -11,8 +10,8 @@ import java.util.Optional;
 
 public interface ChatRoomUseCase {
 
-	PageResponse<ChatRoom> fetchChatRoom(@Valid PaginationQuery paginationQuery);
+    PageResponse<ChatRoom> fetchChatRoom(@Valid PaginationQuery paginationQuery);
 
-	Optional<ChatRoom> getChatRoomById(@NotNull String roomId);
+    Optional<ChatRoom> getChatRoomById(@NotNull String roomId);
 
 }
