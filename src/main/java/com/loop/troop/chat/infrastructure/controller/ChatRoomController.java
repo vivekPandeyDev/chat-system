@@ -1,15 +1,14 @@
 package com.loop.troop.chat.infrastructure.controller;
 
-import com.loop.troop.chat.application.command.CreateChatRoomCommand;
+import com.loop.troop.chat.application.command.CreateGroupChatRoomCommand;
 import com.loop.troop.chat.application.dto.PageResponse;
 import com.loop.troop.chat.application.dto.PaginationQuery;
 import com.loop.troop.chat.application.usecase.ChatRoomUseCase;
 import com.loop.troop.chat.application.usecase.GroupChatRoomUseCase;
-import com.loop.troop.chat.domain.enums.RoomType;
 import com.loop.troop.chat.infrastructure.shared.dto.ApiResponse;
 import com.loop.troop.chat.infrastructure.shared.dto.room.AddParticipantRequestDto;
 import com.loop.troop.chat.infrastructure.shared.dto.room.ChatRoomResponseDto;
-import com.loop.troop.chat.infrastructure.shared.dto.room.CreateRoomRequestDto;
+import com.loop.troop.chat.infrastructure.shared.dto.room.CreateGroupChatRoomRequest;
 import com.loop.troop.chat.infrastructure.shared.mapper.ChatRoomMapper;
 import com.loop.troop.chat.infrastructure.web.validator.ValidUUID;
 import jakarta.validation.Valid;
@@ -28,22 +27,16 @@ public class ChatRoomController {
 
 	private final GroupChatRoomUseCase groupChatRoomUseCase;
 
-	@PostMapping
-	public ResponseEntity<ApiResponse<String>> createRoom(@Valid @RequestBody CreateRoomRequestDto request) {
-		String roomId = chatRoomUseCase.createRoom(roomCommand(request));
+	@PostMapping("/group")
+	public ResponseEntity<ApiResponse<String>> createGroupChatRoom(@RequestBody CreateGroupChatRoomRequest request) {
+		String roomId = groupChatRoomUseCase.createGroupChatRoom(getGroupChatRoomCommand(request));
 		var chatRoomCreatedResponse = new ApiResponse<>(true, "new message room created", roomId);
 		return ResponseEntity.ok(chatRoomCreatedResponse);
 	}
 
-	private CreateChatRoomCommand roomCommand(CreateRoomRequestDto request) {
-		return CreateChatRoomCommand.builder()
-			.roomType(RoomType.valueOf(request.getRoomType()))
-			.createdById(request.getCreatedById())
-			.groupName(request.getGroupName())
-			.initialParticipantIds(request.getInitialParticipantIds())
-			.otherParticipantId(request.getOtherParticipantId())
-			.isPermanent(request.getIsPermanent())
-			.build();
+	private CreateGroupChatRoomCommand getGroupChatRoomCommand(CreateGroupChatRoomRequest request) {
+		return new CreateGroupChatRoomCommand(request.createdById(), request.groupName(), request.isPermanent(),
+				request.initialParticipantIds());
 	}
 
 	@GetMapping

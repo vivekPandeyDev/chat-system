@@ -7,16 +7,16 @@ public class Utility {
 	private Utility() {
 	}
 
-	public static boolean isValidUUid(String value) {
+	public static boolean isNotValidUUid(String value) {
 		if (value == null || value.isBlank()) {
-			return false; // null or blank is invalid
+			return true;
 		}
 		try {
 			UUID.fromString(value);
-			return true;
+			return false;
 		}
 		catch (IllegalArgumentException ex) {
-			return false;
+			return true;
 		}
 	}
 

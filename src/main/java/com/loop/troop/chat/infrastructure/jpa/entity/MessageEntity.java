@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "messages")
+@Table(name = "message")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,7 +25,7 @@ public class MessageEntity {
 	@JoinColumn(name = "room_id")
 	private ChatRoomEntity room;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "sender_id")
 	private UserEntity sender;
 

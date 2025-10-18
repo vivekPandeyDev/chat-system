@@ -46,7 +46,7 @@ public class UserService implements UserUseCase {
 			throw UserServiceException.userAlreadyExists(command.email());
 		}
 		try {
-			var newUser = new User(command.username(), command.email(),command.password());
+			var newUser = new User(command.username(), command.email(), command.password());
 			User savedUser = userPersistence.save(newUser);
 			eventPublisher.publishEvent(new UserRegisteredEvent(savedUser));
 			log.info("saved user info: {}", savedUser);

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "chat_rooms")
+@Table(name = "chat_room")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,7 +25,7 @@ public class ChatRoomEntity {
 	@Enumerated(EnumType.STRING)
 	private RoomType type;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "created_by")
 	private UserEntity createdBy;
 
@@ -39,13 +39,13 @@ public class ChatRoomEntity {
 
 	// Participants: used for both single and group message
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "chat_room_participants", joinColumns = @JoinColumn(name = "room_id"),
+	@JoinTable(name = "chat_room_participant", joinColumns = @JoinColumn(name = "room_id"),
 			inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private List<UserEntity> participants = new ArrayList<>();
 
 	// Admins for group chats
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "chat_room_admins", joinColumns = @JoinColumn(name = "room_id"),
+	@JoinTable(name = "chat_room_admin", joinColumns = @JoinColumn(name = "room_id"),
 			inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private List<UserEntity> admins = new ArrayList<>();
 

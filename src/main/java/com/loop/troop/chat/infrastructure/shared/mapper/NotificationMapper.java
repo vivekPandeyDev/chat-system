@@ -18,7 +18,7 @@ public class NotificationMapper {
 
 	public static NotificationEntity toEntity(Notification domain) {
 		return NotificationEntity.builder()
-			.notificationId(domain.getNotificationId())
+			.notificationId(toUuid(domain.getNotificationId()))
 			.user(UserMapper.toEntity(domain.getUser()))
 			.room(ChatRoomEntity.builder().roomId(UUID.fromString(domain.getRoom().getRoomId())).build()) // reference
 			// only
@@ -31,7 +31,7 @@ public class NotificationMapper {
 	}
 
 	public static Notification toDomain(NotificationEntity entity, User user, ChatRoom room, Message message) {
-		return new Notification(entity.getNotificationId(), user, room, message, entity.getType());
+		return new Notification(toString(entity.getNotificationId()), user, room, message, entity.getType());
 	}
 
 	public static String toString(UUID uuid) {

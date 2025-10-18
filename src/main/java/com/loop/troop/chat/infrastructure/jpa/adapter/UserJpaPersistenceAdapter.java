@@ -40,7 +40,7 @@ public class UserJpaPersistenceAdapter implements UserPersistence {
 
 	@Override
 	public Optional<User> findById(String userId) {
-		if (!Utility.isValidUUid(userId)) {
+		if (Utility.isNotValidUUid(userId)) {
 			throw new IllegalArgumentException("Invalid UUID format");
 		}
 		return userRepository.findById(UUID.fromString(userId)).map(UserMapper::toDomain);
@@ -77,7 +77,7 @@ public class UserJpaPersistenceAdapter implements UserPersistence {
 
 	@Override
 	public void updateStatus(String userId, UserStatus status) {
-		if (!Utility.isValidUUid(userId)) {
+		if (Utility.isNotValidUUid(userId)) {
 			throw new IllegalArgumentException("Invalid UUID format");
 		}
 		var savedUserEntity = userRepository.findById(UUID.fromString(userId))
@@ -89,7 +89,7 @@ public class UserJpaPersistenceAdapter implements UserPersistence {
 	@Override
 	public List<User> fetchUsersById(List<String> userIds) {
 		for (var id : userIds) {
-			if (!Utility.isValidUUid(id)) {
+			if (Utility.isNotValidUUid(id)) {
 				throw new IllegalArgumentException("Invalid UUID format");
 			}
 		}

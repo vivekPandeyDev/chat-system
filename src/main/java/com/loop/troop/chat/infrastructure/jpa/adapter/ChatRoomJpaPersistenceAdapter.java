@@ -43,7 +43,7 @@ public class ChatRoomJpaPersistenceAdapter implements ChatRoomPersistence {
 
 	@Override
 	public Optional<ChatRoom> findById(String chatRoomId) {
-		if (!Utility.isValidUUid(chatRoomId)) {
+		if (Utility.isNotValidUUid(chatRoomId)) {
 			throw new IllegalArgumentException("Invalid UUID format");
 		}
 		return chatRoomRepository.findById(UUID.fromString(chatRoomId)).map(ChatRoomMapper::toDomain);
@@ -69,7 +69,7 @@ public class ChatRoomJpaPersistenceAdapter implements ChatRoomPersistence {
 
 	@Override
 	public void addParticipants(String roomId, String userId) {
-		if (!Utility.isValidUUid(roomId) || !Utility.isValidUUid(userId)) {
+		if (Utility.isNotValidUUid(roomId) || Utility.isNotValidUUid(userId)) {
 			throw new IllegalArgumentException("Invalid UUID format");
 		}
 		var chatRoomEntity = chatRoomRepository.findById(UUID.fromString(roomId))
@@ -83,7 +83,7 @@ public class ChatRoomJpaPersistenceAdapter implements ChatRoomPersistence {
 
 	@Override
 	public void removeParticipants(String roomId, String userId) {
-		if (!Utility.isValidUUid(roomId) || !Utility.isValidUUid(userId)) {
+		if (Utility.isNotValidUUid(roomId) || Utility.isNotValidUUid(userId)) {
 			throw new IllegalArgumentException("Invalid UUID format");
 		}
 		var chatRoomEntity = chatRoomRepository.findById(UUID.fromString(roomId))
@@ -95,7 +95,7 @@ public class ChatRoomJpaPersistenceAdapter implements ChatRoomPersistence {
 	}
 
 	public List<User> getRoomParticipant(String chatRoomId) {
-		if (!Utility.isValidUUid(chatRoomId)) {
+		if (Utility.isNotValidUUid(chatRoomId)) {
 			throw new IllegalArgumentException("Invalid UUID format");
 		}
 		return chatRoomRepository.findParticipantByRoomId(UUID.fromString(chatRoomId))

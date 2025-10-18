@@ -9,6 +9,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,9 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
 	public static final String UNEXPECTED_ERROR = "Unexpected error";
+    public static final String ERROR_CODE = "errorCode";
 
-	private final ServiceExceptionDetailRegistry detailRegistry;
+    private final ServiceExceptionDetailRegistry detailRegistry;
 
 	private final ErrorLogService errorLogService;
 
@@ -45,13 +47,28 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(ex.getStatus()).body(problem);
 	}
 
+    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    public ProblemDetail handleInvalidDataAccessApiUsage(InvalidDataAccessApiUsageException ex) {
+        log.error("Data access error: {}", ex.getMessage(),ex);
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage() != null ? ex.getMessage() : "Invalid data access usage"
+        );
+        problem.setType(URI.create("https://example.com/errors/INVALID_DATA_ACCESS"));
+        problem.setTitle("Invalid Data Access");
+        problem.setProperty(ERROR_CODE, "INVALID_DATA_ACCESS");
+
+        return problem;
+    }
+
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex) {
 		log.warn("Illegal argument: {}", ex.getMessage());
 		ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
 		problem.setType(URI.create("https://example.com/errors/INVALID_ARGUMENT"));
 		problem.setTitle("Invalid Argument");
-		problem.setProperty("errorCode", "INVALID_ARGUMENT");
+		problem.setProperty(ERROR_CODE, "INVALID_ARGUMENT");
 		return problem;
 	}
 
@@ -87,7 +104,7 @@ public class GlobalExceptionHandler {
 		ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, errorMessage);
 		problem.setType(URI.create("https://example.com/errors/CONSTRAINT_VIOLATION"));
 		problem.setTitle("Constraint Violation");
-		problem.setProperty("errorCode", "CONSTRAINT_VIOLATION");
+		problem.setProperty(ERROR_CODE, "CONSTRAINT_VIOLATION");
 		return problem;
 	}
 

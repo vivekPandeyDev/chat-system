@@ -5,9 +5,10 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "notifications")
+@Table(name = "notification")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,26 +16,27 @@ import java.time.LocalDateTime;
 @Builder
 public class NotificationEntity {
 
-	@Id
-	private String notificationId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID notificationId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private UserEntity user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "room_id")
-	private ChatRoomEntity room;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    private ChatRoomEntity room;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "message_id")
-	private MessageEntity message;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "message_id")
+    private MessageEntity message;
 
-	@Enumerated(EnumType.STRING)
-	private NotificationType type;
+    @Enumerated(EnumType.STRING)
+    private NotificationType type;
 
-	private boolean isRead;
+    private boolean isRead;
 
-	private LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
 }

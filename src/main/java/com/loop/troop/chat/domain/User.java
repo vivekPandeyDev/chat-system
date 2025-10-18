@@ -23,9 +23,8 @@ public class User {
 	private String imagePath;
 
 	private UserStatus status;
-    private String password;
 
-
+	private String password;
 
 	public User(String username, String email, String password) {
 		this.password = password;

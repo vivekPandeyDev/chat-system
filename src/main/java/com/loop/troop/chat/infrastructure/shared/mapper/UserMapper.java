@@ -16,9 +16,10 @@ public class UserMapper {
 		if (entity == null)
 			return null;
 		var user = new User(entity.getUsername(), entity.getEmail(), entity.getPassword());
-        user.setImagePath(entity.getImagePath());
+		user.setImagePath(entity.getImagePath());
 		user.setUserId(Objects.nonNull(entity.getUserId()) ? String.valueOf(entity.getUserId()) : null);
 		user.setStatus(entity.getStatus());
+        user.setPassword(entity.getPassword());
 		return user;
 	}
 
@@ -36,7 +37,7 @@ public class UserMapper {
 		entity.setEmail(domain.getEmail());
 		entity.setImagePath(domain.getImagePath());
 		entity.setStatus(domain.getStatus());
-        entity.setPassword(domain.getPassword());
+		entity.setPassword(domain.getPassword());
 		return entity;
 	}
 

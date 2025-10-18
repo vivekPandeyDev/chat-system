@@ -34,7 +34,7 @@ public class MessageJpaPersistenceAdapter implements MessagePersistence {
 
 	@Override
 	public Optional<Message> findById(String messageId) {
-		if (!Utility.isValidUUid(messageId)) {
+		if (Utility.isNotValidUUid(messageId)) {
 			throw new IllegalArgumentException("Invalid UUID format");
 		}
 		return messageRepository.findById(UUID.fromString(messageId)).map(MessageMapper::toDomain);
@@ -42,7 +42,7 @@ public class MessageJpaPersistenceAdapter implements MessagePersistence {
 
 	@Override
 	public PageResponse<Message> findAllByRoomId(String roomId, PaginationQuery paginationQuery) {
-		if (!Utility.isValidUUid(roomId)) {
+		if (Utility.isNotValidUUid(roomId)) {
 			throw new IllegalArgumentException("Invalid UUID format");
 		}
 		// Set defaults if null
