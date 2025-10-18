@@ -28,6 +28,7 @@ public class UserEntity {
 	private String email;
 
 	private String imagePath;
+    private String password;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)

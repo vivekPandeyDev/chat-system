@@ -23,9 +23,12 @@ public class User {
 	private String imagePath;
 
 	private UserStatus status;
+    private String password;
 
-	public User(String username, String email, String imagePath) {
-		this.imagePath = imagePath;
+
+
+	public User(String username, String email, String password) {
+		this.password = password;
 		this.username = username;
 		this.email = email;
 		this.status = UserStatus.OFFLINE;

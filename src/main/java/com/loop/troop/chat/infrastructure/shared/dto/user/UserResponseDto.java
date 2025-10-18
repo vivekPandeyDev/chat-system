@@ -5,13 +5,9 @@ import com.loop.troop.chat.domain.enums.UserStatus;
 
 public record UserResponseDto(
 
-        String userId,
-        String username,
-        String email,
+		String userId, String username, String email,
 
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        String avatarUrl,
+		@JsonInclude(JsonInclude.Include.NON_NULL) String avatarUrl,
 
-        UserStatus status
-) {
+		UserStatus status) {
 }

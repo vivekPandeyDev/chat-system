@@ -12,6 +12,7 @@ import com.loop.troop.chat.infrastructure.shared.dto.user.CreateUserRequestDto;
 import com.loop.troop.chat.infrastructure.shared.dto.user.UserResponseDto;
 import com.loop.troop.chat.infrastructure.shared.mapper.UserMapper;
 import com.loop.troop.chat.infrastructure.web.validator.ValidUUID;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +29,9 @@ public class UserController {
 
 	private final UserUseCase userUserCase;
 
-	@PostMapping
-	public ResponseEntity<ApiResponse<UserResponseDto>> createUser(@RequestBody CreateUserRequestDto request) {
-		var user = userUserCase.registerUser(new CreateUserCommand(request.username(), request.email()));
+	@PostMapping("/register")
+	public ResponseEntity<ApiResponse<UserResponseDto>> createUser(@Valid @RequestBody CreateUserRequestDto request) {
+		var user = userUserCase.registerUser(new CreateUserCommand(request.username(), request.email(), request.password()));
 		var userFetchResponse = new ApiResponse<>(true, "User registered successfully",
 				UserMapper.toResponseDto(user, userUserCase.fetchProfileUrl(user)));
 		return ResponseEntity.ok(userFetchResponse);

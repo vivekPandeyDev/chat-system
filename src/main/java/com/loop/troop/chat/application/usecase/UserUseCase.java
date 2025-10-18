@@ -28,5 +28,7 @@ public interface UserUseCase {
 	String fetchProfileUrl(@NotNull User user);
 
 	List<User> fetchUsersById(@NotNull List<String> userIds);
-    Optional<User> fetchUserByEmail(@NotBlank String email);
+
+	Optional<User> fetchUserByEmail(@NotBlank String email);
+
 }

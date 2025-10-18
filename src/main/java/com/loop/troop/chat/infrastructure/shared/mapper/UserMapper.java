@@ -15,7 +15,8 @@ public class UserMapper {
 	public static User toDomain(UserEntity entity) {
 		if (entity == null)
 			return null;
-		var user = new User(entity.getUsername(), entity.getEmail(), entity.getImagePath());
+		var user = new User(entity.getUsername(), entity.getEmail(), entity.getPassword());
+        user.setImagePath(entity.getImagePath());
 		user.setUserId(Objects.nonNull(entity.getUserId()) ? String.valueOf(entity.getUserId()) : null);
 		user.setStatus(entity.getStatus());
 		return user;
@@ -35,18 +36,13 @@ public class UserMapper {
 		entity.setEmail(domain.getEmail());
 		entity.setImagePath(domain.getImagePath());
 		entity.setStatus(domain.getStatus());
-
+        entity.setPassword(domain.getPassword());
 		return entity;
 	}
 
-    public static UserResponseDto toResponseDto(User domain, String profileUrl) {
-        return new UserResponseDto(
-                domain.getUserId(),
-                domain.getUsername(),
-                domain.getEmail(),
-                profileUrl,          // avatarUrl
-                domain.getStatus()
-        );
-    }
+	public static UserResponseDto toResponseDto(User domain, String profileUrl) {
+		return new UserResponseDto(domain.getUserId(), domain.getUsername(), domain.getEmail(), profileUrl, // avatarUrl
+				domain.getStatus());
+	}
 
 }

@@ -46,7 +46,7 @@ public class UserService implements UserUseCase {
 			throw UserServiceException.userAlreadyExists(command.email());
 		}
 		try {
-			var newUser = new User(command.username(), command.email());
+			var newUser = new User(command.username(), command.email(),command.password());
 			User savedUser = userPersistence.save(newUser);
 			eventPublisher.publishEvent(new UserRegisteredEvent(savedUser));
 			log.info("saved user info: {}", savedUser);
@@ -86,12 +86,12 @@ public class UserService implements UserUseCase {
 		return userPersistence.fetchUsersById(userIds);
 	}
 
-    @Override
-    public Optional<User> fetchUserByEmail(String email) {
-        return userPersistence.findUserByEmail(email);
-    }
+	@Override
+	public Optional<User> fetchUserByEmail(String email) {
+		return userPersistence.findUserByEmail(email);
+	}
 
-    @Override
+	@Override
 	public String uploadUserProfile(@NotBlank String userId, @Valid FileUploadCommand command) {
 		var savedUser = userPersistence.findById(userId).orElseThrow(() -> UserServiceException.userNotFound(userId));
 		fileUseCase.uploadFile(command.filePath().replaceAll("\\s+", ""), command.inputStream(), command.size(),

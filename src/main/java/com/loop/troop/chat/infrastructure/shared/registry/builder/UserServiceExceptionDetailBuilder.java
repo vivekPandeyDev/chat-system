@@ -10,7 +10,8 @@ public class UserServiceExceptionDetailBuilder implements ServiceExceptionDetail
 	@Override
 	public String buildDetail(UserServiceException exception) {
 		return switch (exception.getErrorCode()) {
-            case "USER_EMAIL_NOT_FOUND" -> "The requested user could not be found. Please check the email and try again.";
+			case "USER_EMAIL_NOT_FOUND" ->
+				"The requested user could not be found. Please check the email and try again.";
 			case "USER_NOT_FOUND" -> "The requested user could not be found. Please check the ID and try again.";
 			case "USER_ALREADY_EXISTS" -> "A user with the same email already exists. Please use a different email.";
 			case "USER_STATUS_UPDATE_FAILED" ->

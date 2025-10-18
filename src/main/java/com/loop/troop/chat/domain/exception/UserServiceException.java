@@ -10,12 +10,13 @@ public class UserServiceException extends ServiceException {
 
 	public static UserServiceException userNotFound(String userId) {
 		return new UserServiceException("USER_NOT_FOUND", "User with ID '" + userId + "' not found",
-				HttpStatus.NOT_FOUND);
+				HttpStatus.BAD_REQUEST);
 	}
-    public static UserServiceException userNotFoundWithEmail(String email) {
-        return new UserServiceException("USER_EMAIL_NOT_FOUND", "User with email '" + email + "' not found",
-                HttpStatus.NOT_FOUND);
-    }
+
+	public static UserServiceException userNotFoundWithEmail(String email) {
+		return new UserServiceException("USER_EMAIL_NOT_FOUND", "User with email '" + email + "' not found",
+				HttpStatus.BAD_REQUEST);
+	}
 
 	public static UserServiceException userAlreadyExists(String email) {
 		return new UserServiceException("USER_ALREADY_EXISTS", "User with email '" + email + "' already exists",
