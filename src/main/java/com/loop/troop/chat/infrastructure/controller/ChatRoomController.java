@@ -1,17 +1,14 @@
 package com.loop.troop.chat.infrastructure.controller;
 
-import com.loop.troop.chat.application.command.CreateGroupChatRoomCommand;
+import com.loop.troop.chat.application.command.CreateSingleChatRoomCommand;
 import com.loop.troop.chat.application.dto.PageResponse;
 import com.loop.troop.chat.application.dto.PaginationQuery;
 import com.loop.troop.chat.application.usecase.ChatRoomUseCase;
-import com.loop.troop.chat.application.usecase.GroupChatRoomUseCase;
 import com.loop.troop.chat.infrastructure.shared.dto.ApiResponse;
-import com.loop.troop.chat.infrastructure.shared.dto.room.AddParticipantRequestDto;
 import com.loop.troop.chat.infrastructure.shared.dto.room.ChatRoomResponseDto;
-import com.loop.troop.chat.infrastructure.shared.dto.room.CreateGroupChatRoomRequest;
+import com.loop.troop.chat.infrastructure.shared.dto.room.CreateSingleChatRoomRequest;
 import com.loop.troop.chat.infrastructure.shared.mapper.ChatRoomMapper;
 import com.loop.troop.chat.infrastructure.web.validator.ValidUUID;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,27 +22,15 @@ public class ChatRoomController {
 
 	private final ChatRoomUseCase chatRoomUseCase;
 
-	private final GroupChatRoomUseCase groupChatRoomUseCase;
-
-	@PostMapping("/group")
-	public ResponseEntity<ApiResponse<String>> createGroupChatRoom(@RequestBody CreateGroupChatRoomRequest request) {
-		String roomId = groupChatRoomUseCase.createGroupChatRoom(getGroupChatRoomCommand(request));
-		var chatRoomCreatedResponse = new ApiResponse<>(true, "new message room created", roomId);
-		return ResponseEntity.ok(chatRoomCreatedResponse);
-	}
-
-	private CreateGroupChatRoomCommand getGroupChatRoomCommand(CreateGroupChatRoomRequest request) {
-		return new CreateGroupChatRoomCommand(request.createdById(), request.groupName(), request.isPermanent(),
-				request.initialParticipantIds());
-	}
-
-	@GetMapping
-	public ResponseEntity<PageResponse<ChatRoomResponseDto>> getAllRooms(
+	@GetMapping("/{userId}")
+	public ResponseEntity<PageResponse<ChatRoomResponseDto>> getAvailableChatRoomForUser(
 			@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "10") Integer size,
 			@RequestParam(defaultValue = "createdAt") String sortBy,
-			@RequestParam(defaultValue = "ASC") String sortDir) {
+			@RequestParam(defaultValue = "ASC") String sortDir,
+            @ValidUUID @PathVariable String userId
+        ) {
 		var query = new PaginationQuery(offset, size, sortBy, sortDir);
-		var pageResponse = chatRoomUseCase.fetchChatRoom(query);
+		var pageResponse = chatRoomUseCase.fetchChatRoomPerUser(query,userId);
 		var pageResponseDto = new PageResponse<>(
 				pageResponse.content().stream().map(ChatRoomMapper::chatRoomResponseDto).toList(),
 				pageResponse.totalPages(), pageResponse.size(), pageResponse.totalElements(),
@@ -53,20 +38,11 @@ public class ChatRoomController {
 		return ResponseEntity.ok(pageResponseDto);
 	}
 
-	@PostMapping("/{roomId}/participants")
-	public ResponseEntity<Void> addParticipant(@ValidUUID @PathVariable String roomId,
-			@Valid @RequestBody AddParticipantRequestDto request) {
-
-		groupChatRoomUseCase.addParticipants(roomId, request.getUserId());
-
-		return ResponseEntity.accepted().build();
-	}
-
-	@DeleteMapping("/{roomId}/participants/{userId}")
-	public ResponseEntity<String> removeParticipant(@ValidUUID @PathVariable String roomId,
-			@ValidUUID @PathVariable String userId) {
-		groupChatRoomUseCase.removeParticipants(roomId, userId);
-		return ResponseEntity.noContent().build();
-	}
+    @PostMapping
+    public ResponseEntity<ApiResponse<String>> createSingleChatRoom(@RequestBody CreateSingleChatRoomRequest request){
+        var roomId = chatRoomUseCase.createSingleChatRoom(new CreateSingleChatRoomCommand(request.createdById(),request.otherParticipantsId()));
+        var chatRoomCreatedResponse = new ApiResponse<>(true, "Single chat room created", roomId);
+        return ResponseEntity.ok(chatRoomCreatedResponse);
+    }
 
 }

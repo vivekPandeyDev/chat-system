@@ -5,6 +5,7 @@ import com.loop.troop.chat.application.persistence.ChatRoomPersistence;
 import com.loop.troop.chat.application.persistence.UserPersistence;
 import com.loop.troop.chat.application.usecase.GroupChatRoomUseCase;
 import com.loop.troop.chat.domain.GroupChatRoom;
+import com.loop.troop.chat.domain.exception.ChatRoomServiceException;
 import com.loop.troop.chat.domain.exception.UserServiceException;
 import com.loop.troop.chat.domain.observer.ChatRoomObserver;
 import jakarta.validation.Valid;

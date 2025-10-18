@@ -50,7 +50,10 @@ public class ChatRoomJpaPersistenceAdapter implements ChatRoomPersistence {
 	}
 
 	@Override
-	public PageResponse<ChatRoom> findAll(PaginationQuery paginationQuery) {
+	public PageResponse<ChatRoom> findChatRoomByUserId(PaginationQuery paginationQuery,String userId) {
+        if (Utility.isNotValidUUid(userId)) {
+            throw new IllegalArgumentException("Invalid UUID format");
+        }
 		// Set defaults if null
 		var page = paginationQuery.page() != null ? paginationQuery.page() : 0;
 		var size = paginationQuery.size() != null ? paginationQuery.size() : 10;
@@ -59,7 +62,7 @@ public class ChatRoomJpaPersistenceAdapter implements ChatRoomPersistence {
 		var direction = "desc".equalsIgnoreCase(paginationQuery.sortDir()) ? Sort.Direction.DESC : Sort.Direction.ASC;
 		var pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 		log.info("Pageable data: {}", pageable);
-		var entityPage = chatRoomRepository.findAll(pageable);
+		var entityPage = chatRoomRepository.findByParticipantsByUserId(pageable, UUID.fromString(userId));
 
 		var users = entityPage.getContent().stream().map(ChatRoomMapper::toDomain).toList();
 
@@ -94,7 +97,7 @@ public class ChatRoomJpaPersistenceAdapter implements ChatRoomPersistence {
 		chatRoomRepository.save(chatRoomEntity);
 	}
 
-	public List<User> getRoomParticipant(String chatRoomId) {
+    public List<User> getRoomParticipant(String chatRoomId) {
 		if (Utility.isNotValidUUid(chatRoomId)) {
 			throw new IllegalArgumentException("Invalid UUID format");
 		}

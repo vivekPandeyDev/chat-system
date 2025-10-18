@@ -7,6 +7,7 @@ import com.loop.troop.chat.domain.enums.RoomType;
 import com.loop.troop.chat.infrastructure.jpa.entity.ChatRoomEntity;
 import com.loop.troop.chat.infrastructure.shared.dto.room.ChatRoomResponseDto;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -20,14 +21,14 @@ public class ChatRoomMapper {
 			return null;
 
 		var creator = UserMapper.toDomain(entity.getCreatedBy());
-		var participants = entity.getParticipants().stream().map(UserMapper::toDomain).toList();
+		var participants = entity.getParticipants().stream().filter(userEntity -> !userEntity.getUserId().equals(entity.getCreatedBy().getUserId()) ).map(UserMapper::toDomain).toList();
         var admins = entity.getAdmins().stream().map(UserMapper::toDomain).toList();
 		ChatRoom room;
 		if (entity.getType() == RoomType.SINGLE) {
 			if (participants.isEmpty()) {
 				throw new IllegalArgumentException("Must have other participant for single message room");
 			}
-			room = new SingleChatRoom(toString(entity.getRoomId()), creator, participants.get(1));
+			room = new SingleChatRoom(toString(entity.getRoomId()), creator, participants.getFirst());
 		}
 		else {
 			room = new GroupChatRoom(toString(entity.getRoomId()), creator, entity.getGroupName(),
@@ -56,7 +57,9 @@ public class ChatRoomMapper {
 			builder.groupName(g.getGroupName());
 			builder.isPermanent(g.isPermanent());
 			builder.admins(g.getAdmins().stream().map(UserMapper::toEntity).toList());
-		}
+		}else{
+            builder.admins(new ArrayList<>());
+        }
 
 		return builder.build();
 	}
