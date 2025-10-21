@@ -39,7 +39,7 @@ public class ChatController {
 		var query = new PaginationQuery(offset, size, sortBy, sortDir);
 		var pageResponse = messageUseCase.fetchMessageByRoomId(roomId, query);
 		var pageResponseDto = new PageResponse<>(
-				pageResponse.content().stream().map(MessageMapper::toResponseDto).toList(), pageResponse.totalPages(),
+				pageResponse.content().stream().map(MessageMapper::toResponseDto).toList(), pageResponse.page(),
 				pageResponse.size(), pageResponse.totalElements(), pageResponse.totalPages());
 		return ResponseEntity.ok(pageResponseDto);
 	}
