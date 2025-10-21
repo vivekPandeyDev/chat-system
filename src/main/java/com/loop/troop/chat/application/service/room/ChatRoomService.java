@@ -1,11 +1,11 @@
 package com.loop.troop.chat.application.service.room;
 
-import com.loop.troop.chat.application.command.CreateGroupChatRoomCommand;
 import com.loop.troop.chat.application.command.CreateSingleChatRoomCommand;
 import com.loop.troop.chat.application.dto.PageResponse;
 import com.loop.troop.chat.application.dto.PaginationQuery;
 import com.loop.troop.chat.application.persistence.ChatRoomPersistence;
 import com.loop.troop.chat.application.persistence.UserPersistence;
+import com.loop.troop.chat.application.projection.ChatRoomProjection;
 import com.loop.troop.chat.application.usecase.ChatRoomUseCase;
 import com.loop.troop.chat.domain.ChatRoom;
 import com.loop.troop.chat.domain.SingleChatRoom;
@@ -31,6 +31,7 @@ public class ChatRoomService implements ChatRoomUseCase {
     private final UserPersistence userPersistence;
     @Override
     public String createSingleChatRoom(CreateSingleChatRoomCommand command) {
+        log.info("ChatRoomService::createSingleChatRoom; creating chat room for user: {}", command.createdById());
         var owner = userPersistence.findById(command.createdById())
                 .orElseThrow(() -> UserServiceException.userNotFound(command.createdById()));
 
@@ -47,9 +48,16 @@ public class ChatRoomService implements ChatRoomUseCase {
 		return chatRoomPersistence.findChatRoomByUserId(query,userId);
 	}
 
-	@Override
+    @Override
+    public PageResponse<ChatRoomProjection> fetchChatRoomProjectionPerUser(PaginationQuery query, String userId) {
+        log.info("ChatRoomService::fetchChatRoomProjectionPerUser; page-offset: {}, page-size: {}, page-by: {}, page-dir: {}",
+                query.page(), query.size(), query.sortBy(), query.sortDir());
+        return chatRoomPersistence.findChatRoomProjectionByUserId(query,userId);
+    }
+
+    @Override
 	public Optional<ChatRoom> getChatRoomById(@NotNull String roomId) {
-		log.info("room-id to fetch user: {}", roomId);
+		log.info("ChatRoomService::getChatRoomById; room-id to fetch user: {}", roomId);
 		return chatRoomPersistence.findById(roomId);
 	}
 

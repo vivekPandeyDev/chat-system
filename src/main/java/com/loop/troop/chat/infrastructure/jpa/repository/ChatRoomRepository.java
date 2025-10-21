@@ -19,4 +19,10 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, UUID> 
 
     @Query("select c from ChatRoomEntity c inner join c.participants participants where participants.userId = ?1")
     Page<ChatRoomEntity> findByParticipantsByUserId(Pageable pageable, UUID userId);
+
+    @Query("""
+            select c from ChatRoomEntity c inner join c.participants participants
+            where participants.userId = ?1 and c.isActive = ?2""")
+    Page<ChatRoomEntityInfo> findByParticipantsProjectionByUserIdAndActiveStatus(UUID userId, boolean isActive, Pageable pageable);
+
 }

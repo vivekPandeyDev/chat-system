@@ -37,6 +37,8 @@ public class ChatRoomEntity {
 
 	private boolean isPermanent;
 
+    private String imagePath;
+
 	// Participants: used for both single and group message
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "chat_room_participant", joinColumns = @JoinColumn(name = "room_id"),

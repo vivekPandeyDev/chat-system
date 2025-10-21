@@ -23,12 +23,12 @@ public class ChatRoomResponseDto {
 	private List<UserResponseDto> participants = new ArrayList<>();
 
 	private boolean active;
+    private String roomName;
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private boolean isPermanent;
 
-	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private String groupName;
+
 
 	private List<UserResponseDto> admins = new ArrayList<>();
 

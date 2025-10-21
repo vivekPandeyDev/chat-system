@@ -2,6 +2,7 @@ package com.loop.troop.chat.application.persistence;
 
 import com.loop.troop.chat.application.dto.PageResponse;
 import com.loop.troop.chat.application.dto.PaginationQuery;
+import com.loop.troop.chat.application.projection.ChatRoomProjection;
 import com.loop.troop.chat.domain.ChatRoom;
 
 import java.util.Optional;
@@ -17,4 +18,6 @@ public interface ChatRoomPersistence {
     void addParticipants(String roomId, String userId);
 
     void removeParticipants(String roomId, String userId);
+
+    PageResponse<ChatRoomProjection> findChatRoomProjectionByUserId(PaginationQuery query, String userId);
 }

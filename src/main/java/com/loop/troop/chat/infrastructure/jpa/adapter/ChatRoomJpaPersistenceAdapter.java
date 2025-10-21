@@ -3,8 +3,10 @@ package com.loop.troop.chat.infrastructure.jpa.adapter;
 import com.loop.troop.chat.application.dto.PageResponse;
 import com.loop.troop.chat.application.dto.PaginationQuery;
 import com.loop.troop.chat.application.persistence.ChatRoomPersistence;
+import com.loop.troop.chat.application.projection.ChatRoomProjection;
 import com.loop.troop.chat.domain.ChatRoom;
 import com.loop.troop.chat.domain.User;
+import com.loop.troop.chat.domain.enums.RoomType;
 import com.loop.troop.chat.domain.exception.ChatRoomServiceException;
 import com.loop.troop.chat.domain.exception.UserServiceException;
 import com.loop.troop.chat.infrastructure.jpa.entity.ChatRoomEntity;
@@ -96,6 +98,28 @@ public class ChatRoomJpaPersistenceAdapter implements ChatRoomPersistence {
 		chatRoomEntity.getParticipants().remove(currentParticipant);
 		chatRoomRepository.save(chatRoomEntity);
 	}
+
+    @Override
+    public PageResponse<ChatRoomProjection> findChatRoomProjectionByUserId(PaginationQuery paginationQuery, String userId) {
+        if (Utility.isNotValidUUid(userId)) {
+            throw new IllegalArgumentException("Invalid UUID format");
+        }
+        // Set defaults if null
+        var page = paginationQuery.page() != null ? paginationQuery.page() : 0;
+        var size = paginationQuery.size() != null ? paginationQuery.size() : 10;
+        String createdAt = "createdAt";
+        var sortBy = paginationQuery.sortBy() != null ? paginationQuery.sortBy() : createdAt;
+        var direction = "desc".equalsIgnoreCase(paginationQuery.sortDir()) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        var pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        log.info("Pageable data for chat room projection: {}", pageable);
+        var entityPage = chatRoomRepository.findByParticipantsProjectionByUserIdAndActiveStatus(UUID.fromString(userId),true,pageable);
+
+        var chatRoomProjections = entityPage.getContent().stream().map(ChatRoomMapper::chatRoomProjection)
+                .toList();
+
+        return new PageResponse<>(chatRoomProjections, entityPage.getNumber(), entityPage.getSize(), entityPage.getTotalElements(),
+                entityPage.getTotalPages());
+    }
 
     public List<User> getRoomParticipant(String chatRoomId) {
 		if (Utility.isNotValidUUid(chatRoomId)) {
