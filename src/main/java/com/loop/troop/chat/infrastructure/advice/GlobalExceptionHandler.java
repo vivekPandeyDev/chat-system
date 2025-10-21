@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 				request.getRequestURI());
 		ProblemDetail problem = ProblemDetail.forStatus(ex.getStatus());
 		problem.setType(URI.create("https://example.com/probs/" + ex.getErrorCode().toLowerCase()));
-		problem.setTitle(ex.getUserMessage());
+		problem.setTitle(ex.getErrorCode());
 		problem.setDetail(detail);
 		problem.setInstance(URI.create(request.getRequestURI()));
 		return ResponseEntity.status(ex.getStatus()).body(problem);
@@ -85,7 +85,7 @@ public class GlobalExceptionHandler {
 			.collect(Collectors.joining("; "));
 		ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
 		problem.setType(URI.create("https://example.com/probs/validation-error"));
-		problem.setTitle("Validation failed");
+		problem.setTitle("VALIDATION_ERROR");
 		problem.setDetail(errors);
 		problem.setInstance(URI.create(request.getRequestURI()));
 
