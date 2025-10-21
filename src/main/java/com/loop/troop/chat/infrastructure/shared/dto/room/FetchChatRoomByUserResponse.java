@@ -1,4 +1,4 @@
 package com.loop.troop.chat.infrastructure.shared.dto.room;
 
-public record FetchChatRoomByUserResponse(String groupId, String roomType,String groupName, String groupImageUrl,String lastTextMessage) {
+public record FetchChatRoomByUserResponse(String roomId, String roomType, String roomName, String roomProfileUrl, String lastTextMessage) {
 }

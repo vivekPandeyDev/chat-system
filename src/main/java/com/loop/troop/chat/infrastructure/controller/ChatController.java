@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/chat")
+@RequestMapping("/api/room")
 @RequiredArgsConstructor
 public class ChatController {
 
@@ -32,7 +32,7 @@ public class ChatController {
 		return ResponseEntity.ok(messageSentResponse);
 	}
 
-	@GetMapping("/{roomId}/messages")
+	@GetMapping("/{roomId}/message")
 	public ResponseEntity<PageResponse<MessageResponseDto>> fetchMessages(@PathVariable String roomId,
 			@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "10") Integer size,
 			@RequestParam(defaultValue = "sentAt") String sortBy, @RequestParam(defaultValue = "ASC") String sortDir) {
