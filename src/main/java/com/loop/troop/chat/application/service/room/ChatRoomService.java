@@ -11,6 +11,7 @@ import com.loop.troop.chat.domain.ChatRoom;
 import com.loop.troop.chat.domain.SingleChatRoom;
 import com.loop.troop.chat.domain.exception.UserServiceException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,5 +61,11 @@ public class ChatRoomService implements ChatRoomUseCase {
 		log.info("ChatRoomService::getChatRoomById; room-id to fetch user: {}", roomId);
 		return chatRoomPersistence.findById(roomId);
 	}
+
+    @Override
+    public void updateRoomAvatarPath(@NotBlank String roomId,@NotBlank String filePath) {
+        log.info("ChatRoomService::updateRoomAvatarPath; room-id : {}",roomId);
+        chatRoomPersistence.updateRoomAvatarPath(roomId,filePath);
+    }
 
 }

@@ -121,6 +121,15 @@ public class ChatRoomJpaPersistenceAdapter implements ChatRoomPersistence {
                 entityPage.getTotalPages());
     }
 
+    @Override
+    public void updateRoomAvatarPath(String roomId,String filePath) {
+        if (Utility.isNotValidUUid(roomId)) {
+            throw new IllegalArgumentException("Invalid UUID format");
+        }
+        chatRoomRepository.updateGroupAvatarFilePath(filePath, UUID.fromString(roomId));
+
+    }
+
     public List<User> getRoomParticipant(String chatRoomId) {
 		if (Utility.isNotValidUUid(chatRoomId)) {
 			throw new IllegalArgumentException("Invalid UUID format");

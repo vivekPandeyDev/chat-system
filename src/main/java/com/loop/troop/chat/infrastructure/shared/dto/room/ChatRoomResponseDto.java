@@ -31,7 +31,7 @@ public class ChatRoomResponseDto {
 
     private LocalDateTime expiresAt;
 
-
+    private String roomProfileUrl;
 
 	private List<UserResponseDto> admins = new ArrayList<>();
 

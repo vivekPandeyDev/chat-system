@@ -5,8 +5,10 @@ import com.loop.troop.chat.infrastructure.jpa.entity.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,5 +26,10 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, UUID> 
             select c from ChatRoomEntity c inner join c.participants participants
             where participants.userId = ?1 and c.isActive = ?2""")
     Page<ChatRoomEntityInfo> findByParticipantsProjectionByUserIdAndActiveStatus(UUID userId, boolean isActive, Pageable pageable);
+
+    @Transactional
+    @Modifying
+    @Query("update ChatRoomEntity c set c.imagePath = ?1 where c.roomId = ?2")
+    void updateGroupAvatarFilePath(String imagePath, UUID roomId);
 
 }

@@ -13,11 +13,14 @@ import com.loop.troop.chat.infrastructure.shared.dto.room.FetchChatRoomByUserRes
 import com.loop.troop.chat.infrastructure.shared.mapper.ChatRoomMapper;
 import com.loop.troop.chat.infrastructure.web.validator.ValidUUID;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -27,30 +30,51 @@ import java.util.concurrent.TimeUnit;
 @Validated
 public class ChatRoomController {
 
-	private final ChatRoomUseCase chatRoomUseCase;
+    private final ChatRoomUseCase chatRoomUseCase;
     private final FileUseCase fileUseCase;
+
+    @PutMapping("/{roomId}/avatar")
+    public ResponseEntity<ApiResponse<ChatRoomResponseDto>> uploadRoomAvatar(@NotBlank @PathVariable(name = "roomId") String roomId,
+                                                                             @NotNull(message = "File be provided") @RequestParam(value = "avatar", required = false) MultipartFile file) throws IOException {
+
+        var filePath = String.join("/", "room", roomId,"avatar", Objects.requireNonNull(file.getOriginalFilename()));
+        fileUseCase.uploadFile(filePath.replaceAll("\\s+", ""), file.getInputStream(), file.getSize(), file.getContentType());
+        var profileUrl = fileUseCase.generatePresignedUrl(filePath, 7, TimeUnit.DAYS);
+        var roomInfo = chatRoomUseCase.getChatRoomById(roomId).orElseThrow(() -> ChatRoomServiceException.roomNotFound(roomId));
+        roomInfo.setImagePath(filePath);
+        chatRoomUseCase.updateRoomAvatarPath(roomId,filePath);
+        var responseDto = ChatRoomMapper.chatRoomResponseDto(roomInfo);
+        responseDto.setRoomProfileUrl(profileUrl);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Room info fetched with room id: " + roomId, responseDto));
+    }
+
 
     @GetMapping("/info/{roomId}")
     public ResponseEntity<ApiResponse<ChatRoomResponseDto>> getRoomInfo(@NotBlank @PathVariable(name = "roomId") String roomId) {
         var roomInfo = chatRoomUseCase.getChatRoomById(roomId).orElseThrow(() -> ChatRoomServiceException.roomNotFound(roomId));
         var responseDto = ChatRoomMapper.chatRoomResponseDto(roomInfo);
-        return ResponseEntity.ok(new ApiResponse<>(true,"Room info fetched with room id: " + roomId,responseDto));
+        if (Objects.nonNull(roomInfo.getImagePath())){
+            var avatarUrl = fileUseCase.generatePresignedUrl(roomInfo.getImagePath(),7,TimeUnit.DAYS);
+            responseDto.setRoomProfileUrl(avatarUrl);
+        }
+        return ResponseEntity.ok(new ApiResponse<>(true, "Room info fetched with room id: " + roomId, responseDto));
     }
-	@GetMapping("/user/{userId}")
-	public ResponseEntity<PageResponse<ChatRoomResponseDto>> getAvailableChatRoomForUser(
-			@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "10") Integer size,
-			@RequestParam(defaultValue = "createdAt") String sortBy,
-			@RequestParam(defaultValue = "ASC") String sortDir,
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<PageResponse<ChatRoomResponseDto>> getAvailableChatRoomForUser(
+            @RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "ASC") String sortDir,
             @ValidUUID @PathVariable String userId
-        ) {
-		var query = new PaginationQuery(offset, size, sortBy, sortDir);
-		var pageResponse = chatRoomUseCase.fetchChatRoomPerUser(query,userId);
-		var pageResponseDto = new PageResponse<>(
-				pageResponse.content().stream().map(ChatRoomMapper::chatRoomResponseDto).toList(),
-				pageResponse.totalPages(), pageResponse.size(), pageResponse.totalElements(),
-				pageResponse.totalPages());
-		return ResponseEntity.ok(pageResponseDto);
-	}
+    ) {
+        var query = new PaginationQuery(offset, size, sortBy, sortDir);
+        var pageResponse = chatRoomUseCase.fetchChatRoomPerUser(query, userId);
+        var pageResponseDto = new PageResponse<>(
+                pageResponse.content().stream().map(ChatRoomMapper::chatRoomResponseDto).toList(),
+                pageResponse.totalPages(), pageResponse.size(), pageResponse.totalElements(),
+                pageResponse.totalPages());
+        return ResponseEntity.ok(pageResponseDto);
+    }
 
     @GetMapping("/projection/user/{userId}")
     public ResponseEntity<PageResponse<FetchChatRoomByUserResponse>> getAvailableChatRoomProjectionForUser(
@@ -60,14 +84,14 @@ public class ChatRoomController {
             @ValidUUID @PathVariable String userId
     ) {
         var query = new PaginationQuery(offset, size, sortBy, sortDir);
-        var pageResponse = chatRoomUseCase.fetchChatRoomProjectionPerUser(query,userId);
+        var pageResponse = chatRoomUseCase.fetchChatRoomProjectionPerUser(query, userId);
         var pageResponseDto = new PageResponse<>(
                 pageResponse.content().stream().map(projection -> {
-                    String imageUrl =null;
+                    String imageUrl = null;
                     if (Objects.nonNull(projection.getImagePath()))
-                        imageUrl = fileUseCase.generatePresignedUrl(projection.getImagePath(),7, TimeUnit.DAYS);
+                        imageUrl = fileUseCase.generatePresignedUrl(projection.getImagePath(), 7, TimeUnit.DAYS);
                     // TODO -> message use case to fetch latest text message
-                    return ChatRoomMapper.chatRoomProjectionResponse(projection,imageUrl,"No message currently");
+                    return ChatRoomMapper.chatRoomProjectionResponse(projection, imageUrl, "No message currently");
                 }).toList(),
                 pageResponse.totalPages(), pageResponse.size(), pageResponse.totalElements(),
                 pageResponse.totalPages());
@@ -75,8 +99,8 @@ public class ChatRoomController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<String>> createSingleChatRoom(@RequestBody CreateSingleChatRoomRequest request){
-        var roomId = chatRoomUseCase.createSingleChatRoom(new CreateSingleChatRoomCommand(request.createdById(),request.otherParticipantsId()));
+    public ResponseEntity<ApiResponse<String>> createSingleChatRoom(@RequestBody CreateSingleChatRoomRequest request) {
+        var roomId = chatRoomUseCase.createSingleChatRoom(new CreateSingleChatRoomCommand(request.createdById(), request.otherParticipantsId()));
         var chatRoomCreatedResponse = new ApiResponse<>(true, "Single chat room created", roomId);
         return ResponseEntity.ok(chatRoomCreatedResponse);
     }

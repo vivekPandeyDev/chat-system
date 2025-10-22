@@ -6,6 +6,7 @@ import com.loop.troop.chat.application.dto.PaginationQuery;
 import com.loop.troop.chat.application.projection.ChatRoomProjection;
 import com.loop.troop.chat.domain.ChatRoom;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Optional;
@@ -18,5 +19,5 @@ public interface ChatRoomUseCase {
     PageResponse<ChatRoomProjection> fetchChatRoomProjectionPerUser(@Valid PaginationQuery paginationQuery, @NotNull String userId);
 
     Optional<ChatRoom> getChatRoomById(@NotNull String roomId);
-
+    void updateRoomAvatarPath(@NotBlank String roomId,@NotBlank String filePath);
 }

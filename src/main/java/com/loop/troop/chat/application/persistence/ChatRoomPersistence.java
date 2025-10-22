@@ -20,4 +20,5 @@ public interface ChatRoomPersistence {
     void removeParticipants(String roomId, String userId);
 
     PageResponse<ChatRoomProjection> findChatRoomProjectionByUserId(PaginationQuery query, String userId);
+    void updateRoomAvatarPath(String roomId,String filePath);
 }
