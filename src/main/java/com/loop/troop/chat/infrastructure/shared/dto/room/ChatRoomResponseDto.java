@@ -23,10 +23,13 @@ public class ChatRoomResponseDto {
 	private List<UserResponseDto> participants = new ArrayList<>();
 
 	private boolean active;
+
     private String roomName;
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private boolean isPermanent;
+	private Boolean isPermanent;
+
+    private LocalDateTime expiresAt;
 
 
 

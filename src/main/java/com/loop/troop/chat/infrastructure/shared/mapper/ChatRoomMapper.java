@@ -34,12 +34,15 @@ public class ChatRoomMapper {
 			room = new SingleChatRoom(toString(entity.getRoomId()), creator, participants.getFirst());
 		}
 		else {
-			room = new GroupChatRoom(toString(entity.getRoomId()), creator, entity.getGroupName(),
+			var groupChatRoom = new GroupChatRoom(toString(entity.getRoomId()), creator, entity.getGroupName(),
 					entity.isPermanent(), participants,admins);
-		}
+		    groupChatRoom.setExpireAt(entity.getExpiresAt());
+            room = groupChatRoom;
+        }
 
         room.setActive(entity.isActive());
         room.setImagePath(entity.getImagePath());
+
 		return room;
 	}
 
@@ -61,6 +64,7 @@ public class ChatRoomMapper {
 
 			builder.isPermanent(g.isPermanent());
 			builder.admins(g.getAdmins().stream().map(UserMapper::toEntity).toList());
+            builder.expiresAt(g.getExpireAt());
 		}else{
             builder.admins(new ArrayList<>());
         }
@@ -82,8 +86,8 @@ public class ChatRoomMapper {
 		chatRoomResponseDto.setCreatedAt(chatRoom.getCreatedAt());
 		chatRoomResponseDto.setActive(chatRoom.isActive());
 		if (chatRoom instanceof GroupChatRoom groupChatRoom) {
-
-			chatRoomResponseDto.setPermanent(groupChatRoom.isPermanent());
+            chatRoomResponseDto.setExpiresAt(groupChatRoom.getExpireAt());
+			chatRoomResponseDto.setIsPermanent(groupChatRoom.isPermanent());
 			chatRoomResponseDto.setAdmins(
 					groupChatRoom.getAdmins().stream().map(user -> UserMapper.toResponseDto(user, null)).toList());
 		}

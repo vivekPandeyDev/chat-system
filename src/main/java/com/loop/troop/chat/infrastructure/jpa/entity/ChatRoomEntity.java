@@ -38,6 +38,7 @@ public class ChatRoomEntity {
 	private boolean isPermanent;
 
     private String imagePath;
+    private LocalDateTime expiresAt;
 
 	// Participants: used for both single and group message
 	@ManyToMany(fetch = FetchType.LAZY)
