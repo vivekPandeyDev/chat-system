@@ -19,7 +19,7 @@ public class UserMapper {
 		user.setImagePath(entity.getImagePath());
 		user.setUserId(Objects.nonNull(entity.getUserId()) ? String.valueOf(entity.getUserId()) : null);
 		user.setStatus(entity.getStatus());
-        user.setPassword(entity.getPassword());
+		user.setPassword(entity.getPassword());
 		return user;
 	}
 

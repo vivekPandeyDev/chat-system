@@ -12,27 +12,26 @@ import java.util.List;
 @Setter
 public final class GroupChatRoom extends ChatRoom {
 
-    private boolean isPermanent;
-    private LocalDateTime expireAt;
+	private boolean isPermanent;
 
-    private final List<User> admins = new ArrayList<>();
+	private LocalDateTime expireAt;
 
-    public GroupChatRoom(String roomId, User createdBy, String groupName, boolean isPermanent,
-                         List<User> initialParticipants) {
-        super(roomId,groupName, isPermanent ? RoomType.GROUP : RoomType.TEMPORARY, createdBy);
-        this.isPermanent = isPermanent;
-        this.admins.add(createdBy);
-        initialParticipants.forEach(this::addParticipant);
-    }
+	private final List<User> admins = new ArrayList<>();
 
+	public GroupChatRoom(String roomId, User createdBy, String groupName, boolean isPermanent,
+			List<User> initialParticipants) {
+		super(roomId, groupName, isPermanent ? RoomType.GROUP : RoomType.TEMPORARY, createdBy);
+		this.isPermanent = isPermanent;
+		this.admins.add(createdBy);
+		initialParticipants.forEach(this::addParticipant);
+	}
 
-
-    public GroupChatRoom(String roomId, User createdBy, String groupName, boolean isPermanent,
-                         List<User> initialParticipants, List<User> admins) {
-        super(roomId,groupName, isPermanent ? RoomType.GROUP : RoomType.TEMPORARY, createdBy);
-        this.isPermanent = isPermanent;
-        this.admins.addAll(admins);
-        initialParticipants.forEach(this::addParticipant);
-    }
+	public GroupChatRoom(String roomId, User createdBy, String groupName, boolean isPermanent,
+			List<User> initialParticipants, List<User> admins) {
+		super(roomId, groupName, isPermanent ? RoomType.GROUP : RoomType.TEMPORARY, createdBy);
+		this.isPermanent = isPermanent;
+		this.admins.addAll(admins);
+		initialParticipants.forEach(this::addParticipant);
+	}
 
 }

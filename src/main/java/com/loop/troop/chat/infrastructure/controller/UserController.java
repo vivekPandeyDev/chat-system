@@ -48,13 +48,29 @@ public class UserController {
 
 	@GetMapping
 	public ResponseEntity<PageResponse<UserResponseDto>> getAllUsers(@RequestParam(defaultValue = "0") Integer offset,
-			@RequestParam(defaultValue = "10") Integer size, @RequestParam(defaultValue = "name") String sortBy,
+			@RequestParam(defaultValue = "10") Integer size, @RequestParam(defaultValue = "username") String sortBy,
 			@RequestParam(defaultValue = "ASC") String sortDir) {
 		var query = new PaginationQuery(offset, size, sortBy, sortDir);
 		var pageResponse = userUserCase.fetchUsers(query);
 		var userResponseDtoList = pageResponse.content()
 			.stream()
 			.map(user -> UserMapper.toResponseDto(user, null))
+			.toList();
+		var pageResponseDto = new PageResponse<>(userResponseDtoList, pageResponse.totalPages(), pageResponse.size(),
+				pageResponse.totalElements(), pageResponse.totalPages());
+		return ResponseEntity.ok(pageResponseDto);
+	}
+
+	@GetMapping("/search")
+	public ResponseEntity<PageResponse<UserResponseDto>> searchUsers(@RequestParam(defaultValue = "") String query,
+			@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "10") Integer size,
+			@RequestParam(defaultValue = "username") String sortBy,
+			@RequestParam(defaultValue = "ASC") String sortDir) {
+		var paginationQuery = new PaginationQuery(offset, size, sortBy, sortDir);
+		var pageResponse = userUserCase.fetchUsers(paginationQuery, query);
+		var userResponseDtoList = pageResponse.content()
+			.stream()
+			.map(user -> UserMapper.toResponseDto(user, userUserCase.fetchProfileUrl(user)))
 			.toList();
 		var pageResponseDto = new PageResponse<>(userResponseDtoList, pageResponse.totalPages(), pageResponse.size(),
 				pageResponse.totalElements(), pageResponse.totalPages());

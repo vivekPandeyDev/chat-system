@@ -52,10 +52,10 @@ public class ChatRoomJpaPersistenceAdapter implements ChatRoomPersistence {
 	}
 
 	@Override
-	public PageResponse<ChatRoom> findChatRoomByUserId(PaginationQuery paginationQuery,String userId) {
-        if (Utility.isNotValidUUid(userId)) {
-            throw new IllegalArgumentException("Invalid UUID format");
-        }
+	public PageResponse<ChatRoom> findChatRoomByUserId(PaginationQuery paginationQuery, String userId) {
+		if (Utility.isNotValidUUid(userId)) {
+			throw new IllegalArgumentException("Invalid UUID format");
+		}
 		// Set defaults if null
 		var page = paginationQuery.page() != null ? paginationQuery.page() : 0;
 		var size = paginationQuery.size() != null ? paginationQuery.size() : 10;
@@ -99,38 +99,39 @@ public class ChatRoomJpaPersistenceAdapter implements ChatRoomPersistence {
 		chatRoomRepository.save(chatRoomEntity);
 	}
 
-    @Override
-    public PageResponse<ChatRoomProjection> findChatRoomProjectionByUserId(PaginationQuery paginationQuery, String userId) {
-        if (Utility.isNotValidUUid(userId)) {
-            throw new IllegalArgumentException("Invalid UUID format");
-        }
-        // Set defaults if null
-        var page = paginationQuery.page() != null ? paginationQuery.page() : 0;
-        var size = paginationQuery.size() != null ? paginationQuery.size() : 10;
-        String createdAt = "createdAt";
-        var sortBy = paginationQuery.sortBy() != null ? paginationQuery.sortBy() : createdAt;
-        var direction = "desc".equalsIgnoreCase(paginationQuery.sortDir()) ? Sort.Direction.DESC : Sort.Direction.ASC;
-        var pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        log.info("Pageable data for chat room projection: {}", pageable);
-        var entityPage = chatRoomRepository.findByParticipantsProjectionByUserIdAndActiveStatus(UUID.fromString(userId),true,pageable);
+	@Override
+	public PageResponse<ChatRoomProjection> findChatRoomProjectionByUserId(PaginationQuery paginationQuery,
+			String userId) {
+		if (Utility.isNotValidUUid(userId)) {
+			throw new IllegalArgumentException("Invalid UUID format");
+		}
+		// Set defaults if null
+		var page = paginationQuery.page() != null ? paginationQuery.page() : 0;
+		var size = paginationQuery.size() != null ? paginationQuery.size() : 10;
+		String createdAt = "createdAt";
+		var sortBy = paginationQuery.sortBy() != null ? paginationQuery.sortBy() : createdAt;
+		var direction = "desc".equalsIgnoreCase(paginationQuery.sortDir()) ? Sort.Direction.DESC : Sort.Direction.ASC;
+		var pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+		log.info("Pageable data for chat room projection: {}", pageable);
+		var entityPage = chatRoomRepository.findByParticipantsProjectionByUserIdAndActiveStatus(UUID.fromString(userId),
+				true, pageable);
 
-        var chatRoomProjections = entityPage.getContent().stream().map(ChatRoomMapper::chatRoomProjection)
-                .toList();
+		var chatRoomProjections = entityPage.getContent().stream().map(ChatRoomMapper::chatRoomProjection).toList();
 
-        return new PageResponse<>(chatRoomProjections, entityPage.getNumber(), entityPage.getSize(), entityPage.getTotalElements(),
-                entityPage.getTotalPages());
-    }
+		return new PageResponse<>(chatRoomProjections, entityPage.getNumber(), entityPage.getSize(),
+				entityPage.getTotalElements(), entityPage.getTotalPages());
+	}
 
-    @Override
-    public void updateRoomAvatarPath(String roomId,String filePath) {
-        if (Utility.isNotValidUUid(roomId)) {
-            throw new IllegalArgumentException("Invalid UUID format");
-        }
-        chatRoomRepository.updateGroupAvatarFilePath(filePath, UUID.fromString(roomId));
+	@Override
+	public void updateRoomAvatarPath(String roomId, String filePath) {
+		if (Utility.isNotValidUUid(roomId)) {
+			throw new IllegalArgumentException("Invalid UUID format");
+		}
+		chatRoomRepository.updateGroupAvatarFilePath(filePath, UUID.fromString(roomId));
 
-    }
+	}
 
-    public List<User> getRoomParticipant(String chatRoomId) {
+	public List<User> getRoomParticipant(String chatRoomId) {
 		if (Utility.isNotValidUUid(chatRoomId)) {
 			throw new IllegalArgumentException("Invalid UUID format");
 		}

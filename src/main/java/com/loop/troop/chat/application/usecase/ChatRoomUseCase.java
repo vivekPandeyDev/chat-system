@@ -12,12 +12,16 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Optional;
 
 public interface ChatRoomUseCase {
-    String createSingleChatRoom(@Valid CreateSingleChatRoomCommand request);
 
-    PageResponse<ChatRoom> fetchChatRoomPerUser(@Valid PaginationQuery paginationQuery, @NotNull String userId);
+	String createSingleChatRoom(@Valid CreateSingleChatRoomCommand request);
 
-    PageResponse<ChatRoomProjection> fetchChatRoomProjectionPerUser(@Valid PaginationQuery paginationQuery, @NotNull String userId);
+	PageResponse<ChatRoom> fetchChatRoomPerUser(@Valid PaginationQuery paginationQuery, @NotNull String userId);
 
-    Optional<ChatRoom> getChatRoomById(@NotNull String roomId);
-    void updateRoomAvatarPath(@NotBlank String roomId,@NotBlank String filePath);
+	PageResponse<ChatRoomProjection> fetchChatRoomProjectionPerUser(@Valid PaginationQuery paginationQuery,
+			@NotNull String userId);
+
+	Optional<ChatRoom> getChatRoomById(@NotNull String roomId);
+
+	void updateRoomAvatarPath(@NotBlank String roomId, @NotBlank String filePath);
+
 }

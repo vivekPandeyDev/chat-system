@@ -17,6 +17,8 @@ public interface UserPersistence {
 
 	PageResponse<User> findAll(PaginationQuery paginationQuery);
 
+	PageResponse<User> findAll(PaginationQuery paginationQuery, String queryString);
+
 	void updateStatus(String userId, UserStatus status);
 
 	List<User> fetchUsersById(List<String> userIds);

@@ -36,9 +36,9 @@ public class GroupChatRoomService implements GroupChatRoomUseCase {
 		var participants = userPersistence.fetchUsersById(command.participantIds());
 		var groupChatRoom = new GroupChatRoom(null, owner, command.groupName(), command.isPermanent(), participants);
 		observerList.forEach(groupChatRoom::addObserver);
-        if (!command.isPermanent()){
-            groupChatRoom.setExpireAt(LocalDateTime.now().minusDays(1));
-        }
+		if (!command.isPermanent()) {
+			groupChatRoom.setExpireAt(LocalDateTime.now().minusDays(1));
+		}
 		var savedRoom = chatRoomPersistence.save(groupChatRoom);
 		return savedRoom.getRoomId();
 	}

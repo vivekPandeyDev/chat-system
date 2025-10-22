@@ -9,16 +9,18 @@ import java.util.Optional;
 
 public interface ChatRoomPersistence {
 
-    ChatRoom save(ChatRoom chatRoom);
+	ChatRoom save(ChatRoom chatRoom);
 
-    Optional<ChatRoom> findById(String chatRoomId);
+	Optional<ChatRoom> findById(String chatRoomId);
 
-    PageResponse<ChatRoom> findChatRoomByUserId(PaginationQuery paginationQuery,String userId);
+	PageResponse<ChatRoom> findChatRoomByUserId(PaginationQuery paginationQuery, String userId);
 
-    void addParticipants(String roomId, String userId);
+	void addParticipants(String roomId, String userId);
 
-    void removeParticipants(String roomId, String userId);
+	void removeParticipants(String roomId, String userId);
 
-    PageResponse<ChatRoomProjection> findChatRoomProjectionByUserId(PaginationQuery query, String userId);
-    void updateRoomAvatarPath(String roomId,String filePath);
+	PageResponse<ChatRoomProjection> findChatRoomProjectionByUserId(PaginationQuery query, String userId);
+
+	void updateRoomAvatarPath(String roomId, String filePath);
+
 }

@@ -26,9 +26,10 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
 	public static final String UNEXPECTED_ERROR = "Unexpected error";
-    public static final String ERROR_CODE = "errorCode";
 
-    private final ServiceExceptionDetailRegistry detailRegistry;
+	public static final String ERROR_CODE = "errorCode";
+
+	private final ServiceExceptionDetailRegistry detailRegistry;
 
 	private final ErrorLogService errorLogService;
 
@@ -47,20 +48,18 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(ex.getStatus()).body(problem);
 	}
 
-    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
-    public ProblemDetail handleInvalidDataAccessApiUsage(InvalidDataAccessApiUsageException ex) {
-        log.error("Data access error: {}", ex.getMessage(),ex);
+	@ExceptionHandler(InvalidDataAccessApiUsageException.class)
+	public ProblemDetail handleInvalidDataAccessApiUsage(InvalidDataAccessApiUsageException ex) {
+		log.error("Data access error: {}", ex.getMessage(), ex);
 
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.BAD_REQUEST,
-                ex.getMessage() != null ? ex.getMessage() : "Invalid data access usage"
-        );
-        problem.setType(URI.create("https://example.com/errors/INVALID_DATA_ACCESS"));
-        problem.setTitle("Invalid Data Access");
-        problem.setProperty(ERROR_CODE, "INVALID_DATA_ACCESS");
+		ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+				ex.getMessage() != null ? ex.getMessage() : "Invalid data access usage");
+		problem.setType(URI.create("https://example.com/errors/INVALID_DATA_ACCESS"));
+		problem.setTitle("Invalid Data Access");
+		problem.setProperty(ERROR_CODE, "INVALID_DATA_ACCESS");
 
-        return problem;
-    }
+		return problem;
+	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex) {

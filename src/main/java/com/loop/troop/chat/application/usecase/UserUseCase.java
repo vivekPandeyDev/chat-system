@@ -21,6 +21,8 @@ public interface UserUseCase {
 
 	PageResponse<User> fetchUsers(@Valid PaginationQuery paginationQuery);
 
+	PageResponse<User> fetchUsers(@Valid PaginationQuery paginationQuery, @NotBlank String query);
+
 	void updateStatus(@NotBlank String userId, @NotNull UserStatus status);
 
 	String uploadUserProfile(@NotBlank String userId, @Valid FileUploadCommand command);

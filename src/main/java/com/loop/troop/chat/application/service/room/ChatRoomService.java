@@ -29,43 +29,46 @@ import java.util.Optional;
 public class ChatRoomService implements ChatRoomUseCase {
 
 	private final ChatRoomPersistence chatRoomPersistence;
-    private final UserPersistence userPersistence;
-    @Override
-    public String createSingleChatRoom(CreateSingleChatRoomCommand command) {
-        log.info("ChatRoomService::createSingleChatRoom; creating chat room for user: {}", command.createdById());
-        var owner = userPersistence.findById(command.createdById())
-                .orElseThrow(() -> UserServiceException.userNotFound(command.createdById()));
 
-        var otherParticipant = userPersistence.findById(command.otherParticipantsId())
-                .orElseThrow(() -> UserServiceException.userNotFound(command.otherParticipantsId()));
-        var chatRoom = new SingleChatRoom(null,owner,otherParticipant);
-        return chatRoomPersistence.save(chatRoom).getRoomId();
-    }
+	private final UserPersistence userPersistence;
 
-    @Override
+	@Override
+	public String createSingleChatRoom(CreateSingleChatRoomCommand command) {
+		log.info("ChatRoomService::createSingleChatRoom; creating chat room for user: {}", command.createdById());
+		var owner = userPersistence.findById(command.createdById())
+			.orElseThrow(() -> UserServiceException.userNotFound(command.createdById()));
+
+		var otherParticipant = userPersistence.findById(command.otherParticipantsId())
+			.orElseThrow(() -> UserServiceException.userNotFound(command.otherParticipantsId()));
+		var chatRoom = new SingleChatRoom(null, owner, otherParticipant);
+		return chatRoomPersistence.save(chatRoom).getRoomId();
+	}
+
+	@Override
 	public PageResponse<ChatRoom> fetchChatRoomPerUser(@Valid PaginationQuery query, @NotNull String userId) {
 		log.info("ChatRoomService::fetchChatRoom; page-offset: {}, page-size: {}, page-by: {}, page-dir: {}",
 				query.page(), query.size(), query.sortBy(), query.sortDir());
-		return chatRoomPersistence.findChatRoomByUserId(query,userId);
+		return chatRoomPersistence.findChatRoomByUserId(query, userId);
 	}
 
-    @Override
-    public PageResponse<ChatRoomProjection> fetchChatRoomProjectionPerUser(PaginationQuery query, String userId) {
-        log.info("ChatRoomService::fetchChatRoomProjectionPerUser; page-offset: {}, page-size: {}, page-by: {}, page-dir: {}",
-                query.page(), query.size(), query.sortBy(), query.sortDir());
-        return chatRoomPersistence.findChatRoomProjectionByUserId(query,userId);
-    }
+	@Override
+	public PageResponse<ChatRoomProjection> fetchChatRoomProjectionPerUser(PaginationQuery query, String userId) {
+		log.info(
+				"ChatRoomService::fetchChatRoomProjectionPerUser; page-offset: {}, page-size: {}, page-by: {}, page-dir: {}",
+				query.page(), query.size(), query.sortBy(), query.sortDir());
+		return chatRoomPersistence.findChatRoomProjectionByUserId(query, userId);
+	}
 
-    @Override
+	@Override
 	public Optional<ChatRoom> getChatRoomById(@NotNull String roomId) {
 		log.info("ChatRoomService::getChatRoomById; room-id to fetch user: {}", roomId);
 		return chatRoomPersistence.findById(roomId);
 	}
 
-    @Override
-    public void updateRoomAvatarPath(@NotBlank String roomId,@NotBlank String filePath) {
-        log.info("ChatRoomService::updateRoomAvatarPath; room-id : {}",roomId);
-        chatRoomPersistence.updateRoomAvatarPath(roomId,filePath);
-    }
+	@Override
+	public void updateRoomAvatarPath(@NotBlank String roomId, @NotBlank String filePath) {
+		log.info("ChatRoomService::updateRoomAvatarPath; room-id : {}", roomId);
+		chatRoomPersistence.updateRoomAvatarPath(roomId, filePath);
+	}
 
 }

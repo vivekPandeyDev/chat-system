@@ -8,13 +8,15 @@ import java.util.UUID;
  * Projection for {@link com.loop.troop.chat.infrastructure.jpa.entity.ChatRoomEntity}
  */
 public interface ChatRoomEntityInfo {
-    UUID getRoomId();
 
-    RoomType getType();
+	UUID getRoomId();
 
-    String getGroupName();
+	RoomType getType();
 
-    boolean isIsPermanent();
+	String getGroupName();
 
-    String getImagePath();
+	boolean isIsPermanent();
+
+	String getImagePath();
+
 }

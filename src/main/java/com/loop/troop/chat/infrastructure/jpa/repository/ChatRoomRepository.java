@@ -16,20 +16,21 @@ import java.util.UUID;
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, UUID> {
 
-    @Query("select c.participants from ChatRoomEntity c where c.roomId = ?1")
-    List<UserEntity> findParticipantByRoomId(UUID roomId);
+	@Query("select c.participants from ChatRoomEntity c where c.roomId = ?1")
+	List<UserEntity> findParticipantByRoomId(UUID roomId);
 
-    @Query("select c from ChatRoomEntity c inner join c.participants participants where participants.userId = ?1")
-    Page<ChatRoomEntity> findByParticipantsByUserId(Pageable pageable, UUID userId);
+	@Query("select c from ChatRoomEntity c inner join c.participants participants where participants.userId = ?1")
+	Page<ChatRoomEntity> findByParticipantsByUserId(Pageable pageable, UUID userId);
 
-    @Query("""
-            select c from ChatRoomEntity c inner join c.participants participants
-            where participants.userId = ?1 and c.isActive = ?2""")
-    Page<ChatRoomEntityInfo> findByParticipantsProjectionByUserIdAndActiveStatus(UUID userId, boolean isActive, Pageable pageable);
+	@Query("""
+			select c from ChatRoomEntity c inner join c.participants participants
+			where participants.userId = ?1 and c.isActive = ?2""")
+	Page<ChatRoomEntityInfo> findByParticipantsProjectionByUserIdAndActiveStatus(UUID userId, boolean isActive,
+			Pageable pageable);
 
-    @Transactional
-    @Modifying
-    @Query("update ChatRoomEntity c set c.imagePath = ?1 where c.roomId = ?2")
-    void updateGroupAvatarFilePath(String imagePath, UUID roomId);
+	@Transactional
+	@Modifying
+	@Query("update ChatRoomEntity c set c.imagePath = ?1 where c.roomId = ?2")
+	void updateGroupAvatarFilePath(String imagePath, UUID roomId);
 
 }

@@ -72,6 +72,13 @@ public class UserService implements UserUseCase {
 	}
 
 	@Override
+	public PageResponse<User> fetchUsers(PaginationQuery query, String queryString) {
+		log.info("UserService::fetchUsers; page-offset: {}, page-size: {}, page-by: {}, page-dir: {},query-str: {}",
+				query.page(), query.size(), query.sortBy(), query.sortDir(), queryString);
+		return userPersistence.findAll(query, queryString);
+	}
+
+	@Override
 	public void updateStatus(@NotBlank String userId, @NotNull UserStatus status) {
 		var savedUser = userPersistence.findById(userId).orElseThrow(() -> UserServiceException.userNotFound(userId));
 		savedUser.updateStatus(status);

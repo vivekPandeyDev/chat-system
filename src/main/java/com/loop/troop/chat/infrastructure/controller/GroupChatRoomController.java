@@ -18,30 +18,31 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class GroupChatRoomController {
 
-    private final GroupChatRoomUseCase groupChatRoomUseCase;
+	private final GroupChatRoomUseCase groupChatRoomUseCase;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<String>> createGroupChatRoom(@RequestBody CreateGroupChatRoomRequest request) {
-        request.initialParticipantIds().add(request.createdById());
-        var groupChatRoomCommand=new CreateGroupChatRoomCommand(request.createdById(), request.groupName(), request.isPermanent(),
-                request.initialParticipantIds());
-        String roomId = groupChatRoomUseCase.createGroupChatRoom(groupChatRoomCommand);
-        var chatRoomCreatedResponse = new ApiResponse<>(true, "new message room created", roomId);
-        return ResponseEntity.ok(chatRoomCreatedResponse);
-    }
+	@PostMapping
+	public ResponseEntity<ApiResponse<String>> createGroupChatRoom(@RequestBody CreateGroupChatRoomRequest request) {
+		request.initialParticipantIds().add(request.createdById());
+		var groupChatRoomCommand = new CreateGroupChatRoomCommand(request.createdById(), request.groupName(),
+				request.isPermanent(), request.initialParticipantIds());
+		String roomId = groupChatRoomUseCase.createGroupChatRoom(groupChatRoomCommand);
+		var chatRoomCreatedResponse = new ApiResponse<>(true, "new message room created", roomId);
+		return ResponseEntity.ok(chatRoomCreatedResponse);
+	}
 
-    @PostMapping("/{roomId}/participants")
-    public ResponseEntity<Void> addParticipant(@ValidUUID @PathVariable String roomId,
-                                               @Valid @RequestBody AddParticipantRequestDto request) {
+	@PostMapping("/{roomId}/participants")
+	public ResponseEntity<Void> addParticipant(@ValidUUID @PathVariable String roomId,
+			@Valid @RequestBody AddParticipantRequestDto request) {
 
-        groupChatRoomUseCase.addParticipants(roomId, request.getUserId());
-        return ResponseEntity.accepted().build();
-    }
+		groupChatRoomUseCase.addParticipants(roomId, request.getUserId());
+		return ResponseEntity.accepted().build();
+	}
 
-    @DeleteMapping("/{roomId}/participants/{userId}")
-    public ResponseEntity<String> removeParticipant(@ValidUUID @PathVariable String roomId,
-                                                    @ValidUUID @PathVariable String userId) {
-        groupChatRoomUseCase.removeParticipants(roomId, userId);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/{roomId}/participants/{userId}")
+	public ResponseEntity<String> removeParticipant(@ValidUUID @PathVariable String roomId,
+			@ValidUUID @PathVariable String userId) {
+		groupChatRoomUseCase.removeParticipants(roomId, userId);
+		return ResponseEntity.noContent().build();
+	}
+
 }

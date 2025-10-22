@@ -19,7 +19,8 @@ import java.util.Objects;
 public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
 
 	protected final String roomId;
-    protected final String roomName;
+
+	protected final String roomName;
 
 	protected final RoomType type;
 
@@ -28,21 +29,21 @@ public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
 	protected final LocalDateTime createdAt;
 
 	protected boolean isActive;
-    protected String imagePath;
+
+	protected String imagePath;
 
 	protected final List<User> participants = new ArrayList<>();
 
 	protected final List<ChatRoomObserver> observers = new ArrayList<>();
 
-	protected ChatRoom(String roomId,String roomName, RoomType type, User createdBy) {
+	protected ChatRoom(String roomId, String roomName, RoomType type, User createdBy) {
 		this.roomId = roomId;
 		this.type = type;
 		this.createdBy = createdBy;
-        this.roomName = roomName;
+		this.roomName = roomName;
 		this.createdAt = LocalDateTime.now();
 		this.isActive = true;
 	}
-
 
 	public void addParticipant(User user) {
 		if (Objects.isNull(user)) {

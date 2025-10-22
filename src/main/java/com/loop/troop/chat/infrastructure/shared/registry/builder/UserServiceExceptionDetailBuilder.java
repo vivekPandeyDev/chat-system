@@ -7,13 +7,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserServiceExceptionDetailBuilder implements ServiceExceptionDetailBuilder<UserServiceException> {
 
-
-
 	@Override
 	public String buildDetail(UserServiceException exception) {
 		return switch (exception.getErrorCode()) {
 			case "USER_EMAIL_NOT_FOUND", "USER_NOT_FOUND" -> "Please check your credentials and try again.";
-            case "USER_ALREADY_EXISTS" -> "A user with the same email already exists. Please use a different email.";
+			case "USER_ALREADY_EXISTS" -> "A user with the same email already exists. Please use a different email.";
 			case "USER_STATUS_UPDATE_FAILED" ->
 				"Cannot update the status of this user. Verify the current status and try again.";
 			case "USER_REGISTRATION_FAILED" ->

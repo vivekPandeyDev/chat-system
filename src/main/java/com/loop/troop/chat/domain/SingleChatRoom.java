@@ -11,7 +11,7 @@ import java.util.List;
 public final class SingleChatRoom extends ChatRoom {
 
 	public SingleChatRoom(String roomId, @NotNull User createdBy, @NotNull User other) {
-		super(roomId,other.getUsername(), RoomType.SINGLE, createdBy);
+		super(roomId, other.getUsername(), RoomType.SINGLE, createdBy);
 		if (createdBy.getUserId().equals(other.getUserId())) {
 			throw new BusinessException("SAME_PARTICIPANT", "single message room should be b/w different participants",
 					HttpStatus.BAD_REQUEST);
@@ -22,7 +22,7 @@ public final class SingleChatRoom extends ChatRoom {
 
 	public SingleChatRoom(String roomId, @NotNull User createdBy, @NotNull User other,
 			List<ChatRoomObserver> chatRoomObservers) {
-		super(roomId,other.getUsername(), RoomType.SINGLE, createdBy);
+		super(roomId, other.getUsername(), RoomType.SINGLE, createdBy);
 		addParticipant(createdBy);
 		addParticipant(other);
 		chatRoomObservers.forEach(this::addObserver);

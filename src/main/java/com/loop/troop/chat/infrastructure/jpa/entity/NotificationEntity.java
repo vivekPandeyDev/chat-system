@@ -16,27 +16,27 @@ import java.util.UUID;
 @Builder
 public class NotificationEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID notificationId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private UUID notificationId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
-    private ChatRoomEntity room;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "room_id")
+	private ChatRoomEntity room;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "message_id")
-    private MessageEntity message;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "message_id")
+	private MessageEntity message;
 
-    @Enumerated(EnumType.STRING)
-    private NotificationType type;
+	@Enumerated(EnumType.STRING)
+	private NotificationType type;
 
-    private boolean isRead;
+	private boolean isRead;
 
-    private LocalDateTime createdAt;
+	private LocalDateTime createdAt;
 
 }

@@ -76,6 +76,27 @@ public class UserJpaPersistenceAdapter implements UserPersistence {
 	}
 
 	@Override
+	public PageResponse<User> findAll(PaginationQuery paginationQuery, String queryString) {
+		// Set defaults if null
+		var page = paginationQuery.page() != null ? paginationQuery.page() : 0;
+		var size = paginationQuery.size() != null ? paginationQuery.size() : 10;
+		String username = "username";
+		var sortBy = paginationQuery.sortBy() != null ? paginationQuery.sortBy() : username;
+		if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
+			sortBy = username;
+		}
+		var direction = "desc".equalsIgnoreCase(paginationQuery.sortDir()) ? Sort.Direction.DESC : Sort.Direction.ASC;
+		var pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+		log.info("Pageable data: {} , query str: {}", pageable, queryString);
+		var entityPage = userRepository.searchUsers(queryString, pageable);
+		var users = entityPage.getContent().stream().map(UserMapper::toDomain).toList();
+
+		return new PageResponse<>(users, entityPage.getNumber(), entityPage.getSize(), entityPage.getTotalElements(),
+				entityPage.getTotalPages());
+
+	}
+
+	@Override
 	public void updateStatus(String userId, UserStatus status) {
 		if (Utility.isNotValidUUid(userId)) {
 			throw new IllegalArgumentException("Invalid UUID format");

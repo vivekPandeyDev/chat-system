@@ -24,14 +24,14 @@ public class ChatRoomResponseDto {
 
 	private boolean active;
 
-    private String roomName;
+	private String roomName;
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Boolean isPermanent;
 
-    private LocalDateTime expiresAt;
+	private LocalDateTime expiresAt;
 
-    private String roomProfileUrl;
+	private String roomProfileUrl;
 
 	private List<UserResponseDto> admins = new ArrayList<>();
 

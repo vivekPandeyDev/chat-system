@@ -12,9 +12,10 @@ public class ChatRoomServiceException extends ServiceException {
 		return new ChatRoomServiceException("CHAT_ROOM_NOT_FOUND", "Chat room with ID '" + roomId + "' not found",
 				HttpStatus.NOT_FOUND);
 	}
-    public static ChatRoomServiceException roomFoundByName(String roomName) {
-        return new ChatRoomServiceException("CHAT_ROOM__FOUND", "Chat room with room name '" + roomName + "' found",
-                HttpStatus.NOT_FOUND);
-    }
+
+	public static ChatRoomServiceException roomFoundByName(String roomName) {
+		return new ChatRoomServiceException("CHAT_ROOM__FOUND", "Chat room with room name '" + roomName + "' found",
+				HttpStatus.NOT_FOUND);
+	}
 
 }
