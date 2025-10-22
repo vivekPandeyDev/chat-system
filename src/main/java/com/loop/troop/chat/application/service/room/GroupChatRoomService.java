@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
+@Validated
 public class GroupChatRoomService implements GroupChatRoomUseCase {
 
 	private final UserPersistence userPersistence;

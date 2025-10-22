@@ -56,7 +56,7 @@ public class UserController {
 			.stream()
 			.map(user -> UserMapper.toResponseDto(user, null))
 			.toList();
-		var pageResponseDto = new PageResponse<>(userResponseDtoList, pageResponse.totalPages(), pageResponse.size(),
+		var pageResponseDto = new PageResponse<>(userResponseDtoList, pageResponse.page(), pageResponse.size(),
 				pageResponse.totalElements(), pageResponse.totalPages());
 		return ResponseEntity.ok(pageResponseDto);
 	}
@@ -72,7 +72,7 @@ public class UserController {
 			.stream()
 			.map(user -> UserMapper.toResponseDto(user, userUserCase.fetchProfileUrl(user)))
 			.toList();
-		var pageResponseDto = new PageResponse<>(userResponseDtoList, pageResponse.totalPages(), pageResponse.size(),
+		var pageResponseDto = new PageResponse<>(userResponseDtoList, pageResponse.page(), pageResponse.size(),
 				pageResponse.totalElements(), pageResponse.totalPages());
 		return ResponseEntity.ok(pageResponseDto);
 	}

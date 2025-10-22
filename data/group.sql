@@ -1,0 +1,29 @@
+INSERT INTO chat_room (room_id, type, created_by, created_at, is_active, group_name, is_permanent, image_path, expires_at)
+VALUES
+-- SINGLE Rooms
+('11111111-1111-1111-1111-111111110001', 'SINGLE', 'a1b2c3d4-e5f6-11ee-0000-000000000001', NOW(), true, 'Chat with User2', true, NULL, NULL),
+('11111111-1111-1111-1111-111111110002', 'SINGLE', 'a1b2c3d4-e5f6-11ee-0000-000000000002', NOW(), true, 'Chat with User3', true, NULL, NULL),
+('11111111-1111-1111-1111-111111110003', 'SINGLE', 'a1b2c3d4-e5f6-11ee-0000-000000000003', NOW(), true, 'Chat with User4', true, NULL, NULL),
+('11111111-1111-1111-1111-111111110004', 'SINGLE', 'a1b2c3d4-e5f6-11ee-0000-000000000004', NOW(), true, 'Chat with User5', true, NULL, NULL),
+('11111111-1111-1111-1111-111111110005', 'SINGLE', 'a1b2c3d4-e5f6-11ee-0000-000000000006', NOW(), true, 'Chat with User6', true, NULL, NULL),
+('11111111-1111-1111-1111-111111110006', 'SINGLE', 'a1b2c3d4-e5f6-11ee-0000-000000000007', NOW(), true, 'Chat with User7', true, NULL, NULL),
+('11111111-1111-1111-1111-111111110007', 'SINGLE', 'a1b2c3d4-e5f6-11ee-0000-000000000008', NOW(), true, 'Chat with User8', true, NULL, NULL),
+
+-- GROUP Rooms
+('11111111-1111-1111-1111-111111111000', 'GROUP', 'a1b2c3d4-e5f6-11ee-0000-000000000001', NOW(), true, 'Engineering Team', true, NULL, NULL),
+('11111111-1111-1111-1111-111111111001', 'GROUP', 'a1b2c3d4-e5f6-11ee-0000-000000000009', NOW(), true, 'Engineering Team', true, NULL, NULL),
+('11111111-1111-1111-1111-111111111002', 'GROUP', 'a1b2c3d4-e5f6-11ee-0000-000000000010', NOW(), true, 'QA Discussion Room', false, NULL, NULL),
+('11111111-1111-1111-1111-111111111003', 'GROUP', 'a1b2c3d4-e5f6-11ee-0000-000000000011', NOW(), true, 'Product Managers', true, NULL, NULL),
+('11111111-1111-1111-1111-111111111004', 'GROUP', 'a1b2c3d4-e5f6-11ee-0000-000000000012', NOW(), true, 'Support Team', false, NULL, NULL),
+('11111111-1111-1111-1111-111111111005', 'GROUP', 'a1b2c3d4-e5f6-11ee-0000-000000000013', NOW(), true, 'Marketing Chat', true, NULL, NULL),
+('11111111-1111-1111-1111-111111111006', 'GROUP', 'a1b2c3d4-e5f6-11ee-0000-000000000014', NOW(), true, 'Designers Hangout', false, NULL, NULL),
+('11111111-1111-1111-1111-111111111007', 'GROUP', 'a1b2c3d4-e5f6-11ee-0000-000000000015', NOW(), true, 'DevOps Team', true, NULL, NULL),
+('11111111-1111-1111-1111-111111111008', 'GROUP', 'a1b2c3d4-e5f6-11ee-0000-000000000016', NOW(), true, 'HR Team', false, NULL, NULL),
+
+-- TEMPORARY Rooms
+('11111111-1111-1111-1111-111111112000', 'TEMPORARY', 'a1b2c3d4-e5f6-11ee-0000-000000000001', NOW(), true, 'Temp Room 1', false, NULL, NOW() + interval '24 hours'),
+('11111111-1111-1111-1111-111111112001', 'TEMPORARY', 'a1b2c3d4-e5f6-11ee-0000-000000000017', NOW(), true, 'Temp Room 1', false, NULL, NOW() + interval '24 hours'),
+('11111111-1111-1111-1111-111111112002', 'TEMPORARY', 'a1b2c3d4-e5f6-11ee-0000-000000000018', NOW(), true, 'Temp Room 2', false, NULL, NOW() + interval '24 hours'),
+('11111111-1111-1111-1111-111111112003', 'TEMPORARY', 'a1b2c3d4-e5f6-11ee-0000-000000000019', NOW(), true, 'Temp Room 3', false, NULL, NOW() + interval '24 hours'),
+('11111111-1111-1111-1111-111111112004', 'TEMPORARY', 'a1b2c3d4-e5f6-11ee-0000-000000000020', NOW(), true, 'Temp Room 4', false, NULL, NOW() + interval '24 hours'),
+('11111111-1111-1111-1111-111111112005', 'TEMPORARY', 'a1b2c3d4-e5f6-11ee-0000-000000000021', NOW(), true, 'Temp Room 5', false, NULL, NOW() + interval '24 hours');

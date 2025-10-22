@@ -1,7 +1,7 @@
 INSERT INTO users (user_id, username, email, status) VALUES
 ('a1b2c3d4-e5f6-11ee-0000-000000000001', 'Olivia Johnson', 'olivia.johnson@example.com', 'ONLINE'),
 ('a1b2c3d4-e5f6-11ee-0000-000000000002', 'Liam Smith', 'liam.smith@example.com', 'AWAY'),
-('a1b2c3d4-e5f6-11ee-0000-000000000003', 'Emma Williams', 'emma.williams@example.com', 'OFFLINE'),
+    ('a1b2c3d4-e5f6-11ee-0000-000000000003', 'Emma Williams', 'emma.williams@example.com', 'OFFLINE'),
 ('a1b2c3d4-e5f6-11ee-0000-000000000004', 'Noah Brown', 'noah.brown@example.com', 'DO_NOT_DISTURB'),
 ('a1b2c3d4-e5f6-11ee-0000-000000000005', 'Ava Jones', 'ava.jones@example.com', 'ONLINE'),
 ('a1b2c3d4-e5f6-11ee-0000-000000000006', 'Elijah Garcia', 'elijah.garcia@example.com', 'AWAY'),
