@@ -32,6 +32,12 @@ public class ChatController {
 		return ResponseEntity.ok(messageSentResponse);
 	}
 
+    @DeleteMapping("/{roomId}/message/{messageId}")
+    public ResponseEntity<Void> deleteMessage(@ValidUUID @PathVariable String roomId, @ValidUUID String messageId) {
+        messageUseCase.
+        return ResponseEntity.noContent().build();
+    }
+
 	@GetMapping("/{roomId}/message")
 	public ResponseEntity<PageResponse<MessageResponseDto>> fetchMessages(@PathVariable String roomId,
 			@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "10") Integer size,

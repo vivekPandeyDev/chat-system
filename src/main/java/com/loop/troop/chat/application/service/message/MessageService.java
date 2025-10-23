@@ -33,7 +33,12 @@ public class MessageService implements MessageUseCase {
 
 	private final UserPersistence userPersistence;
 
-	@Override
+    @Override
+    public void deleteMessge(@NotBlank String roomId,@NotBlank String messageId) {
+
+    }
+
+    @Override
 	public Message createMessage(@Valid CreateMessageCommand command) {
 		var chatRoom = chatRoomPersistence.findById(command.roomId())
 			.orElseThrow(() -> ChatRoomServiceException.roomNotFound(command.roomId()));
