@@ -9,7 +9,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public interface MessageUseCase {
-    void deleteMessge(@NotBlank String roomId,@NotBlank String messageId);
+
+	void deleteMessge(@NotBlank String roomId, @NotBlank String messageId);
+
 	Message createMessage(@Valid CreateMessageCommand command);
 
 	void sendMessage(@NotNull Message message);
