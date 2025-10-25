@@ -1,5 +1,12 @@
 package com.loop.troop.chat.infrastructure.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.loop.troop.chat.application.command.CreateMessageCommand;
+import com.loop.troop.chat.application.usecase.MessageUseCase;
+import com.loop.troop.chat.infrastructure.shared.dto.message.MessageRequestDto;
+import com.loop.troop.chat.infrastructure.shared.dto.message.MessageResponseDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -18,10 +25,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private final Map<String, List<WebSocketSession>> sessions = new ConcurrentHashMap<>();
-
+    private final MessageUseCase messageUseCase;
+    private final ObjectMapper mapper;
 
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession session) throws Exception {
@@ -34,9 +43,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(@NotNull WebSocketSession session, TextMessage message) throws Exception {
         String roomId = getRoomId(session);
-        String payload = roomId + ":" + message.getPayload();
         // TODO -> send to messaging queue
-        sendToRoom(roomId,payload);
+        sendToRoom(roomId,message.getPayload());
     }
 
     @Override
@@ -50,13 +58,36 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         log.info("Connection closed. Room: {}, Active users: {}", roomId, sessions.getOrDefault(roomId, List.of()).size());
     }
 
-    public void sendToRoom(String roomId, String msg) {
+    public void sendToRoom(String roomId, String msg) throws JsonProcessingException {
         var currentRoomSessions = sessions.getOrDefault(roomId, new ArrayList<>());
-        currentRoomSessions.stream().filter(WebSocketSession::isOpen).forEach(session -> sendMessage(session,msg));
+        var messageRequestDto = mapper.readValue(msg, MessageRequestDto.class);
+        var createdMessage = messageUseCase.createMessage(new CreateMessageCommand(roomId, messageRequestDto.getSenderId(),
+                messageRequestDto.getContent(), messageRequestDto.getMessageType()));
+        var messageResponse = MessageResponseDto.builder()
+                .messageId(createdMessage.getMessageId())
+                .type(createdMessage.getType())
+                .roomId(createdMessage.getRoom().getRoomId())
+                .sentAt(createdMessage.getSentAt())
+                .status(createdMessage.getStatus())
+                .content(createdMessage.getContent())
+                .senderId(createdMessage.getSender().getUserId())
+                .build();
+        messageUseCase.sendMessage(createdMessage);
+        var messageResponseString = mapper.writeValueAsString(messageResponse);
+        currentRoomSessions.stream().filter(WebSocketSession::isOpen).forEach(session -> sendMessage(session,roomId,messageResponseString));
 
     }
 
-    public  static void sendMessage(WebSocketSession session,String msg){
+    public  static void sendMessage(WebSocketSession session,String roomId, String msg){
+        log.info("text message content: {}, for particular room-id: {}",roomId,msg);
+        try {
+            session.sendMessage(new TextMessage(msg));
+        } catch (IOException e) {
+            log.error("Error in sending message: {}",e.getMessage(),e);
+        }
+    }
+    public  static void sendMessage(WebSocketSession session, String msg){
+        log.info("text message content for all roomId : {}",msg);
         try {
             session.sendMessage(new TextMessage(msg));
         } catch (IOException e) {
