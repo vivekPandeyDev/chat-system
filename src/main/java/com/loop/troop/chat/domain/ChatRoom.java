@@ -1,9 +1,10 @@
 package com.loop.troop.chat.domain;
 
-import com.loop.troop.chat.domain.enums.EventType;
 import com.loop.troop.chat.domain.enums.RoomType;
-import com.loop.troop.chat.domain.event.ChatEvent;
-import com.loop.troop.chat.domain.observer.ChatRoomObserver;
+import com.loop.troop.chat.domain.event.ChatRoomEvent;
+import com.loop.troop.chat.domain.event.room.ChatRoomCreatedEvent;
+import com.loop.troop.chat.domain.event.room.ChatRoomMessageSendEvent;
+import com.loop.troop.chat.domain.observer.ObservableDomain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,70 +17,58 @@ import java.util.Objects;
 @Getter
 @Setter
 @Slf4j
-public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
+public abstract sealed class ChatRoom extends ObservableDomain<ChatRoomEvent> permits SingleChatRoom, GroupChatRoom {
 
-	protected final String roomId;
+    protected final String roomId;
 
-	protected final String roomName;
+    protected final String roomName;
 
-	protected final RoomType type;
+    protected final RoomType type;
 
-	protected final User createdBy;
+    protected final User createdBy;
 
-	protected final LocalDateTime createdAt;
+    protected final LocalDateTime createdAt;
 
-	protected boolean isActive;
+    protected boolean isActive;
 
-	private String imagePath;
+    private String imagePath;
 
-	private final List<User> participants = new ArrayList<>();
+    private final List<User> participants = new ArrayList<>();
 
-	private final List<ChatRoomObserver> observers = new ArrayList<>();
+    protected ChatRoom(String roomId, String roomName, RoomType type, User createdBy) {
+        this.roomId = roomId;
+        this.type = type;
+        this.createdBy = createdBy;
+        this.roomName = roomName;
+        this.createdAt = LocalDateTime.now();
+        this.isActive = true;
+        recordEvent(new ChatRoomCreatedEvent(roomId, roomName, createdBy));
+    }
 
-	protected ChatRoom(String roomId, String roomName, RoomType type, User createdBy) {
-		this.roomId = roomId;
-		this.type = type;
-		this.createdBy = createdBy;
-		this.roomName = roomName;
-		this.createdAt = LocalDateTime.now();
-		this.isActive = true;
-	}
+    public void addParticipant(User user) {
+        Objects.requireNonNull(user, "Participant cannot be null");
+        if (!participants.contains(user)) {
+            participants.add(user);
+        }
+    }
 
-	public void addParticipant(User user) {
-		Objects.requireNonNull(user, "Participant cannot be null");
-		if (!participants.contains(user)) {
-			participants.add(user);
-		}
-	}
+    public void removeParticipant(User user) {
+        participants.remove(user);
+    }
 
-	public void removeParticipant(User user) {
-		participants.remove(user);
-	}
+    public List<User> getParticipants() {
+        return List.copyOf(participants);
+    }
 
-	public List<User> getParticipants() {
-		return List.copyOf(participants);
-	}
+    public void deactivate() {
+        this.isActive = false;
+    }
 
-	public void addObserver(ChatRoomObserver obs) {
-		observers.add(obs);
-	}
+    public void sendMessage(Message msg) {
+        var event = new ChatRoomMessageSendEvent(msg.getMessageId(), this.roomName, msg, this.createdBy);
+        recordEvent(event);
+        log.info("[ChatRoom:{}] Message event created: {}", roomId, event);
 
-	public void removeObserver(ChatRoomObserver obs) {
-		observers.remove(obs);
-	}
-
-	public void deactivate() {
-		this.isActive = false;
-	}
-
-	public void notifyObservers(ChatEvent event) {
-		observers.forEach(o -> o.update(event));
-	}
-
-	public void sendMessage(Message msg) {
-		var event = new ChatEvent(EventType.MESSAGE_SENT, roomId, msg, LocalDateTime.now());
-		log.info("[ChatRoom:{}] Message event created: {}", roomId, event);
-		notifyObservers(event);
-	}
+    }
 
 }
