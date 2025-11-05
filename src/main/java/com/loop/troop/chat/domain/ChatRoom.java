@@ -30,11 +30,11 @@ public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
 
 	protected boolean isActive;
 
-	protected String imagePath;
+	private String imagePath;
 
-	protected final List<User> participants = new ArrayList<>();
+	private final List<User> participants = new ArrayList<>();
 
-	protected final List<ChatRoomObserver> observers = new ArrayList<>();
+	private final List<ChatRoomObserver> observers = new ArrayList<>();
 
 	protected ChatRoom(String roomId, String roomName, RoomType type, User createdBy) {
 		this.roomId = roomId;
@@ -46,10 +46,10 @@ public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
 	}
 
 	public void addParticipant(User user) {
-		if (Objects.isNull(user)) {
-			throw new IllegalArgumentException("Participant cannot be null in order to add in message room");
+		Objects.requireNonNull(user, "Participant cannot be null");
+		if (!participants.contains(user)) {
+			participants.add(user);
 		}
-		participants.add(user);
 	}
 
 	public void removeParticipant(User user) {
@@ -68,13 +68,17 @@ public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
 		observers.remove(obs);
 	}
 
+	public void deactivate() {
+		this.isActive = false;
+	}
+
 	public void notifyObservers(ChatEvent event) {
 		observers.forEach(o -> o.update(event));
 	}
 
 	public void sendMessage(Message msg) {
 		var event = new ChatEvent(EventType.MESSAGE_SENT, roomId, msg, LocalDateTime.now());
-		log.info("message send event created : {}", event);
+		log.info("[ChatRoom:{}] Message event created: {}", roomId, event);
 		notifyObservers(event);
 	}
 

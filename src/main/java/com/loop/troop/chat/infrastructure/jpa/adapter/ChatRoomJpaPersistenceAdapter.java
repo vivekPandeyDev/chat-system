@@ -1,5 +1,6 @@
 package com.loop.troop.chat.infrastructure.jpa.adapter;
 
+import com.loop.troop.chat.application.command.SingleChatRoomSaveCommand;
 import com.loop.troop.chat.application.dto.PageResponse;
 import com.loop.troop.chat.application.dto.PaginationQuery;
 import com.loop.troop.chat.application.persistence.ChatRoomPersistence;
@@ -40,6 +41,12 @@ public class ChatRoomJpaPersistenceAdapter implements ChatRoomPersistence {
 	@Override
 	public ChatRoom save(ChatRoom chatRoom) {
 		ChatRoomEntity savedChatRoom = chatRoomRepository.save(toEntity(chatRoom));
+		return toDomain(savedChatRoom);
+	}
+
+	@Override
+	public ChatRoom save(SingleChatRoomSaveCommand singleChatRoomCommand) {
+		ChatRoomEntity savedChatRoom = chatRoomRepository.save(toEntity(singleChatRoomCommand));
 		return toDomain(savedChatRoom);
 	}
 

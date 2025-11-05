@@ -1,6 +1,7 @@
 package com.loop.troop.chat.application.service.room;
 
 import com.loop.troop.chat.application.command.CreateSingleChatRoomCommand;
+import com.loop.troop.chat.application.command.SingleChatRoomSaveCommand;
 import com.loop.troop.chat.application.dto.PageResponse;
 import com.loop.troop.chat.application.dto.PaginationQuery;
 import com.loop.troop.chat.application.persistence.ChatRoomPersistence;
@@ -37,11 +38,9 @@ public class ChatRoomService implements ChatRoomUseCase {
 		log.info("ChatRoomService::createSingleChatRoom; creating chat room for user: {}", command.createdById());
 		var owner = userPersistence.findById(command.createdById())
 			.orElseThrow(() -> UserServiceException.userNotFound(command.createdById()));
-
 		var otherParticipant = userPersistence.findById(command.otherParticipantsId())
 			.orElseThrow(() -> UserServiceException.userNotFound(command.otherParticipantsId()));
-		var chatRoom = new SingleChatRoom(null, owner, otherParticipant);
-		return chatRoomPersistence.save(chatRoom).getRoomId();
+        return chatRoomPersistence.save(new SingleChatRoomSaveCommand(owner, otherParticipant)).getRoomId();
 	}
 
 	@Override

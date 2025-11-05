@@ -1,5 +1,6 @@
 package com.loop.troop.chat.infrastructure.shared.mapper;
 
+import com.loop.troop.chat.application.command.SingleChatRoomSaveCommand;
 import com.loop.troop.chat.application.projection.ChatRoomProjection;
 import com.loop.troop.chat.domain.ChatRoom;
 import com.loop.troop.chat.domain.GroupChatRoom;
@@ -10,9 +11,11 @@ import com.loop.troop.chat.infrastructure.jpa.repository.ChatRoomEntityInfo;
 import com.loop.troop.chat.infrastructure.shared.dto.room.ChatRoomResponseDto;
 import com.loop.troop.chat.infrastructure.shared.dto.room.FetchChatRoomByUserResponse;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public class ChatRoomMapper {
 
@@ -35,7 +38,7 @@ public class ChatRoomMapper {
 			if (participants.isEmpty()) {
 				throw new IllegalArgumentException("Must have other participant for single message room");
 			}
-			room = new SingleChatRoom(toString(entity.getRoomId()), creator, participants.getFirst());
+			room = new SingleChatRoom(Objects.requireNonNull(toString(entity.getRoomId())), creator, participants.getFirst());
 		}
 		else {
 			var groupChatRoom = new GroupChatRoom(toString(entity.getRoomId()), creator, entity.getGroupName(),
@@ -48,6 +51,19 @@ public class ChatRoomMapper {
 		room.setImagePath(entity.getImagePath());
 
 		return room;
+	}
+
+	public static ChatRoomEntity toEntity(SingleChatRoomSaveCommand chatRoomSaveCommand) {
+		ChatRoomEntity entity = new ChatRoomEntity();
+		entity.setActive(true);
+		entity.setType(RoomType.SINGLE);
+		entity.setCreatedBy(UserMapper.toEntity(chatRoomSaveCommand.createdBy()));
+		entity.setCreatedAt(LocalDateTime.now());
+		entity.setCreatedAt(LocalDateTime.now());
+		entity.setParticipants(Stream.of(chatRoomSaveCommand.otherParticipant(), chatRoomSaveCommand.createdBy())
+			.map(UserMapper::toEntity)
+			.toList());
+		return entity;
 	}
 
 	public static ChatRoomEntity toEntity(ChatRoom domain) {

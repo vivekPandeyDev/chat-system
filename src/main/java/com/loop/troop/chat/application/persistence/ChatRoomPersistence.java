@@ -1,5 +1,6 @@
 package com.loop.troop.chat.application.persistence;
 
+import com.loop.troop.chat.application.command.SingleChatRoomSaveCommand;
 import com.loop.troop.chat.application.dto.PageResponse;
 import com.loop.troop.chat.application.dto.PaginationQuery;
 import com.loop.troop.chat.application.projection.ChatRoomProjection;
@@ -10,6 +11,8 @@ import java.util.Optional;
 public interface ChatRoomPersistence {
 
 	ChatRoom save(ChatRoom chatRoom);
+
+	ChatRoom save(SingleChatRoomSaveCommand singleChatRoomCommand);
 
 	Optional<ChatRoom> findById(String chatRoomId);
 
