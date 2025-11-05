@@ -33,7 +33,8 @@ public class ChatController {
 	}
 
 	@DeleteMapping("/{roomId}/message/{messageId}")
-	public ResponseEntity<Void> deleteMessage(@ValidUUID @PathVariable String roomId, @ValidUUID @PathVariable String messageId) {
+	public ResponseEntity<Void> deleteMessage(@ValidUUID @PathVariable String roomId,
+			@ValidUUID @PathVariable String messageId) {
 		messageUseCase.deleteMessge(roomId, messageId);
 		return ResponseEntity.noContent().build();
 	}

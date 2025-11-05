@@ -1,6 +1,7 @@
 package com.loop.troop.chat.domain.exception;
 
 import org.springframework.http.HttpStatus;
+import static com.loop.troop.chat.domain.constant.DomainConstant.*;
 
 public class UserServiceException extends ServiceException {
 
@@ -9,27 +10,27 @@ public class UserServiceException extends ServiceException {
 	}
 
 	public static UserServiceException userNotFound(String userId) {
-		return new UserServiceException("USER_NOT_FOUND", "User with ID '" + userId + "' not found",
+		return new UserServiceException(USER_NOT_FOUND.getValue(), "User with ID '" + userId + "' not found",
 				HttpStatus.BAD_REQUEST);
 	}
 
 	public static UserServiceException userNotFoundWithEmail(String email) {
-		return new UserServiceException("USER_EMAIL_NOT_FOUND", "User with email '" + email + "' not found",
+		return new UserServiceException(USER_EMAIL_NOT_FOUND.getValue(), "User with email '" + email + "' not found",
 				HttpStatus.BAD_REQUEST);
 	}
 
 	public static UserServiceException userAlreadyExists(String email) {
-		return new UserServiceException("USER_ALREADY_EXISTS", "User with email '" + email + "' already exists",
-				HttpStatus.CONFLICT);
+		return new UserServiceException(USER_ALREADY_EXISTS.getValue(),
+				"User with email '" + email + "' already exists", HttpStatus.CONFLICT);
 	}
 
 	public static UserServiceException invalidStatusUpdate(String userId, String reason) {
-		return new UserServiceException("USER_STATUS_UPDATE_FAILED",
+		return new UserServiceException(USER_STATUS_UPDATE_FAILED.getValue(),
 				"Cannot update status for user " + userId + ": " + reason, HttpStatus.BAD_REQUEST);
 	}
 
 	public static UserServiceException registrationFailed(String reason) {
-		return new UserServiceException("USER_REGISTRATION_FAILED", "User registration failed: " + reason,
+		return new UserServiceException(USER_REGISTRATION_FAILED.getValue(), "User registration failed: " + reason,
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

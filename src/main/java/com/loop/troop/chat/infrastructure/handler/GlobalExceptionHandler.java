@@ -1,4 +1,4 @@
-package com.loop.troop.chat.infrastructure.advice;
+package com.loop.troop.chat.infrastructure.handler;
 
 import com.loop.troop.chat.infrastructure.shared.service.ErrorLogService;
 import com.loop.troop.chat.domain.exception.ServiceException;
