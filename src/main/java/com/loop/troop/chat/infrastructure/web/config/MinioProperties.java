@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "minio")
 @Getter
 @Setter
-public class MinioConfig {
+public class MinioProperties {
 
 	private String url;
 

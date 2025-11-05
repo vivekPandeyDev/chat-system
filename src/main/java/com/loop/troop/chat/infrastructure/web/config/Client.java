@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class Client {
 
-	private final MinioConfig config;
+	private final MinioProperties config;
 
 	@Bean
 	public MinioClient minioClient() {

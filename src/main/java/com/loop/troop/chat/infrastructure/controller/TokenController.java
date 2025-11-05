@@ -7,7 +7,7 @@ import com.loop.troop.chat.infrastructure.shared.dto.user.GenerateTokenRequest;
 import com.loop.troop.chat.infrastructure.shared.dto.user.JwtResponse;
 import com.loop.troop.chat.infrastructure.shared.dto.user.UserResponseDto;
 import com.loop.troop.chat.infrastructure.shared.mapper.UserMapper;
-import com.loop.troop.chat.infrastructure.web.config.JwtConfig;
+import com.loop.troop.chat.infrastructure.web.config.JwtProperties;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.validation.Valid;
@@ -22,7 +22,6 @@ import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/token")
@@ -30,7 +29,7 @@ import java.util.UUID;
 @Slf4j
 public class TokenController {
 
-	private final JwtConfig jwtConfig;
+	private final JwtProperties jwtProperties;
 
 	private final UserUseCase userUseCase;
 
@@ -39,12 +38,12 @@ public class TokenController {
 		var email = request.email();
 		var user = userUseCase.fetchUserByEmail(email)
 			.orElseThrow(() -> UserServiceException.userNotFoundWithEmail(email));
-		Key key = Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes(StandardCharsets.UTF_8));
+		Key key = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8));
 		Instant now = Instant.now();
-		Instant expiry = now.plus(jwtConfig.getExpiryMinutes(), ChronoUnit.MINUTES);
+		Instant expiry = now.plus(jwtProperties.getExpiryMinutes(), ChronoUnit.MINUTES);
 		String token = Jwts.builder()
 			.subject(email)
-			.issuer(jwtConfig.getIssuer())
+			.issuer(jwtProperties.getIssuer())
 			.claim("userId", user.getUserId())
 			.issuedAt(Date.from(now))
 			.expiration(Date.from(expiry))
@@ -52,7 +51,7 @@ public class TokenController {
 			.compact();
 
 		var response = new JwtResponse(token, now.getEpochSecond(), expiry.getEpochSecond(),
-				jwtConfig.getExpiryMinutes() * 60L, jwtConfig.getIssuer(), email);
+				jwtProperties.getExpiryMinutes() * 60L, jwtProperties.getIssuer(), email);
 		return ResponseEntity.ok(new ApiResponse<>(true, "Token generated successfully", response));
 
 	}
@@ -76,7 +75,7 @@ public class TokenController {
 
 	private String getUserIdFromToken(String token) {
 
-		var key = Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes(StandardCharsets.UTF_8));
+		var key = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8));
 		try {
 			var claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
 			return claims.get("userId", String.class);
