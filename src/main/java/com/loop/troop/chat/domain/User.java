@@ -27,10 +27,8 @@ public class User {
 	private String password;
 
 	public User(String username, String email, String password) {
+		this(username, email);
 		this.password = password;
-		this.username = username;
-		this.email = email;
-		this.status = UserStatus.OFFLINE;
 	}
 
 	public User(String username, String email) {
@@ -39,19 +37,11 @@ public class User {
 		this.status = UserStatus.OFFLINE;
 	}
 
-	public void sendMessage(ChatRoom room, Message msg) {
-		room.sendMessage(msg);
-	}
-
 	public void updateStatus(UserStatus status) {
 		if (Objects.isNull(status)) {
 			throw new IllegalStateException("User status is required");
 		}
 		this.status = status;
-	}
-
-	public void receiveNotification(Notification n) {
-		log.info("User {} received notification: {}", username, n);
 	}
 
 }
