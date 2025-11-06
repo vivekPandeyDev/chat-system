@@ -58,7 +58,6 @@ public class ChatRoomMapper {
 			.roomId(toUuid(domain.getRoomId()))
 			.type(domain.getType())
 			.createdBy(UserMapper.toEntity(domain.getCreatedBy()))
-			.createdAt(domain.getCreatedAt())
 			.isActive(domain.isActive());
 
 		// map participants

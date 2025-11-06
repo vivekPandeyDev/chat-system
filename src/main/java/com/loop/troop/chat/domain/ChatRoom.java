@@ -16,7 +16,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Slf4j
-public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
+public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom  {
 
 	protected final String roomId;
 
@@ -44,6 +44,7 @@ public abstract sealed class ChatRoom permits SingleChatRoom, GroupChatRoom {
 		this.createdAt = LocalDateTime.now();
 		this.isActive = true;
 	}
+
 
 	public void addParticipant(User user) {
 		if (Objects.isNull(user)) {

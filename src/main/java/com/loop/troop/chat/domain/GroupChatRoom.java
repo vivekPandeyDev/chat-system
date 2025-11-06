@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public final class GroupChatRoom extends ChatRoom {
+public final class GroupChatRoom extends ChatRoom{
 
 	private boolean isPermanent;
 

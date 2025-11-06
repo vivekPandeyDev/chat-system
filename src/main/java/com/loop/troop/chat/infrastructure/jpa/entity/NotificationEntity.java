@@ -4,7 +4,6 @@ import com.loop.troop.chat.domain.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -14,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NotificationEntity {
+public class NotificationEntity extends BaseAuditable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
@@ -37,6 +36,5 @@ public class NotificationEntity {
 
 	private boolean isRead;
 
-	private LocalDateTime createdAt;
 
 }

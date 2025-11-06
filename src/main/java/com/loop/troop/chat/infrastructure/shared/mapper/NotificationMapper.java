@@ -26,7 +26,6 @@ public class NotificationMapper {
 			// only
 			.type(domain.getType())
 			.isRead(domain.isRead())
-			.createdAt(domain.getCreatedAt())
 			.build();
 	}
 

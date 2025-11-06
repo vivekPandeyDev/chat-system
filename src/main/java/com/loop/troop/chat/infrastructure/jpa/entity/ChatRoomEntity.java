@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ChatRoomEntity {
+public class ChatRoomEntity extends BaseAuditable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
@@ -28,8 +28,6 @@ public class ChatRoomEntity {
 	@ManyToOne
 	@JoinColumn(name = "created_by")
 	private UserEntity createdBy;
-
-	private LocalDateTime createdAt;
 
 	private boolean isActive;
 
