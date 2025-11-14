@@ -28,18 +28,6 @@ services:
     networks:
       - app-net
 
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: chat_system_pgadmin
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@chatsystem.com
-      PGADMIN_DEFAULT_PASSWORD: admin123
-    ports:
-      - "8081:80"
-    networks:
-      - app-net
-
   redis:
     image: redis
     restart: always
@@ -109,23 +97,8 @@ services:
     networks:
       - app-net
     volumes:
-      - ./promtail-config.yaml:/etc/promtail/config.yml
+      - ./config/promtail-config.yaml:/etc/promtail/config.yml
       - ./logs:/var/logs
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '0.5'
-  grafana:
-    image: grafana/grafana:9.5.2
-    ports:
-      - "3010:3000"
-    networks:
-      - app-net
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    volumes:
-      - ./grafana-data:/var/lib/grafana
     deploy:
       resources:
         limits:

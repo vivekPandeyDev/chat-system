@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.loop.troop.chat</groupId>
 	<artifactId>chat-system</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>chat-system</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Spring boot chat system backend using web socket and hexagonal arch</description>
 	<url/>
 	<licenses>
 		<license/>

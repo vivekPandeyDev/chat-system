@@ -1,0 +1,32 @@
+services:
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: chat_system_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@chatsystem.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "8081:80"
+    networks:
+      - app-net
+
+  grafana:
+    image: grafana/grafana:9.5.2
+    ports:
+      - "3010:3000"
+    networks:
+      - app-net
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana-data:/var/lib/grafana
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+networks:
+  app-net:
+    external: true

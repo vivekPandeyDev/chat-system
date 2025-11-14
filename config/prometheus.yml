@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s   # scrape every 15 seconds
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'chat-system'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:3000']
+        labels:
+          service: "chat-system-service"
