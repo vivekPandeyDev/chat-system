@@ -40,7 +40,7 @@ public class ChatRoomService implements ChatRoomUseCase {
 			.orElseThrow(() -> UserServiceException.userNotFound(command.createdById()));
 		var otherParticipant = userPersistence.findById(command.otherParticipantsId())
 			.orElseThrow(() -> UserServiceException.userNotFound(command.otherParticipantsId()));
-        return chatRoomPersistence.save(new SingleChatRoomSaveCommand(owner, otherParticipant)).getRoomId();
+		return chatRoomPersistence.save(new SingleChatRoomSaveCommand(owner, otherParticipant)).getRoomId();
 	}
 
 	@Override

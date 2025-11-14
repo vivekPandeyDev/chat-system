@@ -8,16 +8,16 @@ import com.loop.troop.chat.domain.event.enums.ChatRoomEventType;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record ChatRoomMessageSendEvent (UUID eventId, ChatRoomEventType type, String aggregateId, String roomName,
-                                        User createdBy, Message message,
-                                        LocalDateTime occurredOn) implements ChatRoomEvent {
+public record ChatRoomMessageSendEvent(UUID eventId, ChatRoomEventType type, String aggregateId, String roomName,
+		User createdBy, Message message, LocalDateTime occurredOn) implements ChatRoomEvent {
 
-    public ChatRoomMessageSendEvent(String aggregateId, String roomName,Message message, User createdBy) {
-        this(UUID.randomUUID(), ChatRoomEventType.MESSAGE_SENT, aggregateId, roomName, createdBy,message, LocalDateTime.now());
-    }
+	public ChatRoomMessageSendEvent(String aggregateId, String roomName, Message message, User createdBy) {
+		this(UUID.randomUUID(), ChatRoomEventType.MESSAGE_SENT, aggregateId, roomName, createdBy, message,
+				LocalDateTime.now());
+	}
 
-    @Override
-    public String payload() {
-        return message.getContent();
-    }
+	@Override
+	public String payload() {
+		return message.getContent();
+	}
 }

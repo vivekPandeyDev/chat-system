@@ -4,25 +4,27 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public interface DomainEvent {
-    /**
-     * Unique identifier for this event instance.
-     */
-    UUID eventId();
 
-    /**
-     * The timestamp when the event occurred in the domain.
-     */
-    LocalDateTime occurredOn();
+	/**
+	 * Unique identifier for this event instance.
+	 */
+	UUID eventId();
 
-    /**
-     * The name/type of the aggregate (e.g., "ChatRoom", "User").
-     */
-    String aggregateType();
+	/**
+	 * The timestamp when the event occurred in the domain.
+	 */
+	LocalDateTime occurredOn();
 
-    /**
-     * The unique identifier of the aggregate that emitted this event.
-     */
-    String aggregateId();
+	/**
+	 * The name/type of the aggregate (e.g., "ChatRoom", "User").
+	 */
+	String aggregateType();
 
-    String payload();
+	/**
+	 * The unique identifier of the aggregate that emitted this event.
+	 */
+	String aggregateId();
+
+	String payload();
+
 }

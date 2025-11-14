@@ -5,38 +5,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Base class for aggregates that can record domain events
- * during their lifecycle and release them after persistence.
+ * Base class for aggregates that can record domain events during their lifecycle and
+ * release them after persistence.
  */
 public abstract class ObservableDomain<E extends DomainEvent> {
 
-    private final List<E> domainEvents = new ArrayList<>();
-    private final List<DomainObserver<E>> observers = new ArrayList<>();
+	private final List<E> domainEvents = new ArrayList<>();
 
-    protected void recordEvent(E event) {
-        domainEvents.add(event);
-    }
+	private final List<DomainObserver<E>> observers = new ArrayList<>();
 
-    public void addObserver(DomainObserver<E> observer) {
-        observers.add(observer);
-    }
+	protected void recordEvent(E event) {
+		domainEvents.add(event);
+	}
 
-    public void removeObserver(DomainObserver<E> observer) {
-        observers.remove(observer);
-    }
+	public void addObserver(DomainObserver<E> observer) {
+		observers.add(observer);
+	}
 
-    public void notifyObservers(E event) {
-        observers.forEach(observer -> observer.onEvent(event));
-    }
+	public void removeObserver(DomainObserver<E> observer) {
+		observers.remove(observer);
+	}
 
-    public List<E> releaseEvents() {
-        var copy = List.copyOf(domainEvents);
-        domainEvents.clear();
-        copy.forEach(this::notifyObservers);
-        return copy;
-    }
+	public void notifyObservers(E event) {
+		observers.forEach(observer -> observer.onEvent(event));
+	}
 
-    public boolean hasPendingEvents() {
-        return !domainEvents.isEmpty();
-    }
+	public List<E> releaseEvents() {
+		var copy = List.copyOf(domainEvents);
+		domainEvents.clear();
+		copy.forEach(this::notifyObservers);
+		return copy;
+	}
+
+	public boolean hasPendingEvents() {
+		return !domainEvents.isEmpty();
+	}
+
 }

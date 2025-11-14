@@ -38,7 +38,8 @@ public class ChatRoomMapper {
 			if (participants.isEmpty()) {
 				throw new IllegalArgumentException("Must have other participant for single message room");
 			}
-			room = new SingleChatRoom(Objects.requireNonNull(toString(entity.getRoomId())), creator, participants.getFirst());
+			room = new SingleChatRoom(Objects.requireNonNull(toString(entity.getRoomId())), creator,
+					participants.getFirst());
 		}
 		else {
 			var groupChatRoom = new GroupChatRoom(toString(entity.getRoomId()), creator, entity.getGroupName(),
