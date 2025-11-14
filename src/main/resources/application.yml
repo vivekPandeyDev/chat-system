@@ -1,5 +1,16 @@
 server:
-  port: 3000
+  port: ${APP_PORT:3000}
+# ===============================
+# Logging config
+# ===============================
+logging:
+  file:
+    path: ./logs
+  level:
+    root: INFO
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{45} - %msg | traceId=%X{traceId:-NA}%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{45} - %msg | traceId=%X{traceId:-NA}%n"
 
 spring:
   datasource:
